@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calm Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 180s ease-in-out;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: white;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            transition: color 3s ease;
+        }
+
+        .phase-indicator {
+            margin-top: 1.5rem;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: lowercase;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calm Intelligence</h1>
+        <div class="phase-indicator" id="phase"></div>
+    </div>
+    <div class="loading" id="loading">Syncing with the sky...</div>
+
+    <script>
+        // Default location: Toronto, Ontario
+        const DEFAULT_LOCATION = {
+            lat: 43.6532,
+            lng: -79.3832,
+            name: 'Toronto'
+        };
+
+        // Gradient definitions for each phase of day
+        const GRADIENTS = {
+            night: {
+                colors: ['#0a0e27', '#1a1a2e', '#16213e'],
+                textColor: '#ffffff'
+            },
+            dawn: {
+                colors: ['#1a1a2e', '#2d4059', '#5f4b8b'],
+                textColor: '#ffffff'
+            },
+            sunrise: {
+                colors: ['#5f4b8b', '#ea6e4b', '#f7b267'],
+                textColor: '#ffffff'
+            },
+            morning: {
+                colors: ['#87CEEB', '#98d8e8', '#b8e6f0'],
+                textColor: '#2c3e50'
+            },
+            midday: {
+                colors: ['#4facfe', '#00f2fe', '#43e97b'],
+                textColor: '#2c3e50'
+            },
+            afternoon: {
+                colors: ['#89d4f7', '#a8dadc', '#f0c674'],
+                textColor: '#2c3e50'
+            },
+            goldenHour: {
+                colors: ['#f4a261', '#e76f51', '#e9c46a'],
+                textColor: '#2c3e50'
+            },
+            sunset: {
+                colors: ['#ee6352', '#e76f51', '#5f4b8b'],
+                textColor: '#ffffff'
+            },
+            dusk: {
+                colors: ['#5f4b8b', '#2d4059', '#1a1a2e'],
+                textColor: '#ffffff'
+            }
+        };
+
+        let currentLocation = null;
+        let sunData = null;
+
+        // Get user's location
+        function getLocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        currentLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        fetchSunData();
+                    },
+                    error => {
+                        console.log('Geolocation denied, using default location');
+                        currentLocation = DEFAULT_LOCATION;
+                        fetchSunData();
+                    }
+                );
+            } else {
+                currentLocation = DEFAULT_LOCATION;
+                fetchSunData();
+            }
+        }
+
+        // Fetch sunrise/sunset data
+        async function fetchSunData() {
+            try {
+                const response = await fetch(
+                    `https://api.sunrise-sunset.org/json?lat=${currentLocation.lat}&lng=${currentLocation.lng}&formatted=0`
+                );
+                const data = await response.json();
+
+                if (data.status === 'OK') {
+                    sunData = {
+                        sunrise: new Date(data.results.sunrise),
+                        sunset: new Date(data.results.sunset),
+                        solarNoon: new Date(data.results.solar_noon),
+                        civilTwilightBegin: new Date(data.results.civil_twilight_begin),
+                        civilTwilightEnd: new Date(data.results.civil_twilight_end)
+                    };
+
+                    updateGradient();
+                    hideLoading();
+
+                    // Update every minute
+                    setInterval(updateGradient, 60000);
+                } else {
+                    throw new Error('Failed to fetch sun data');
+                }
+            } catch (error) {
+                console.error('Error fetching sun data:', error);
+                hideLoading();
+            }
+        }
+
+        // Calculate current phase of day
+        function getCurrentPhase() {
+            if (!sunData) return 'night';
+
+            const now = new Date();
+            const currentTime = now.getTime();
+
+            const { sunrise, sunset, civilTwilightBegin, civilTwilightEnd } = sunData;
+
+            // Calculate phase transition times
+            const dawnStart = civilTwilightBegin.getTime();
+            const dawnEnd = sunrise.getTime() - (30 * 60 * 1000); // 30 min before sunrise
+            const sunriseStart = dawnEnd;
+            const sunriseEnd = sunrise.getTime() + (30 * 60 * 1000); // 30 min after sunrise
+            const morningEnd = sunrise.getTime() + (3 * 60 * 60 * 1000); // 3 hours after sunrise
+
+            const afternoonStart = sunset.getTime() - (4 * 60 * 60 * 1000); // 4 hours before sunset
+            const goldenHourStart = sunset.getTime() - (90 * 60 * 1000); // 90 min before sunset
+            const sunsetStart = sunset.getTime() - (30 * 60 * 1000); // 30 min before sunset
+            const sunsetEnd = sunset.getTime() + (30 * 60 * 1000); // 30 min after sunset
+            const duskEnd = civilTwilightEnd.getTime();
+
+            if (currentTime >= dawnStart && currentTime < dawnEnd) {
+                return 'dawn';
+            } else if (currentTime >= sunriseStart && currentTime < sunriseEnd) {
+                return 'sunrise';
+            } else if (currentTime >= sunriseEnd && currentTime < morningEnd) {
+                return 'morning';
+            } else if (currentTime >= morningEnd && currentTime < afternoonStart) {
+                return 'midday';
+            } else if (currentTime >= afternoonStart && currentTime < goldenHourStart) {
+                return 'afternoon';
+            } else if (currentTime >= goldenHourStart && currentTime < sunsetStart) {
+                return 'goldenHour';
+            } else if (currentTime >= sunsetStart && currentTime < sunsetEnd) {
+                return 'sunset';
+            } else if (currentTime >= sunsetEnd && currentTime < duskEnd) {
+                return 'dusk';
+            } else {
+                return 'night';
+            }
+        }
+
+        // Update gradient based on current phase
+        function updateGradient() {
+            const phase = getCurrentPhase();
+            const gradient = GRADIENTS[phase];
+
+            if (gradient) {
+                const gradientString = `linear-gradient(135deg, ${gradient.colors.join(', ')})`;
+                document.body.style.background = gradientString;
+                document.querySelector('h1').style.color = gradient.textColor;
+
+                // Update phase indicator
+                const phaseElement = document.getElementById('phase');
+                const phaseNames = {
+                    night: 'night',
+                    dawn: 'dawn',
+                    sunrise: 'sunrise',
+                    morning: 'morning',
+                    midday: 'midday',
+                    afternoon: 'afternoon',
+                    goldenHour: 'golden hour',
+                    sunset: 'sunset',
+                    dusk: 'dusk'
+                };
+                phaseElement.textContent = phaseNames[phase] || '';
+                phaseElement.style.color = gradient.textColor === '#ffffff'
+                    ? 'rgba(255, 255, 255, 0.8)'
+                    : 'rgba(44, 62, 80, 0.7)';
+            }
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            if (loading) {
+                setTimeout(() => {
+                    loading.style.opacity = '0';
+                    setTimeout(() => loading.remove(), 1000);
+                }, 1000);
+            }
+        }
+
+        // Initialize
+        getLocation();
+    </script>
+</body>
+</html>
