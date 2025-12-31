@@ -79,45 +79,22 @@
         body::before {
             content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background:
-                radial-gradient(circle at calc(20% + var(--offset-x)) calc(30% + var(--offset-y)), var(--color-1), transparent 50%),
-                radial-gradient(circle at calc(80% - var(--offset-x)) calc(20% + var(--offset-y)), var(--color-2), transparent 50%),
-                radial-gradient(circle at calc(40% + var(--offset-x) * 0.5) calc(70% - var(--offset-y)), var(--color-3), transparent 50%),
-                radial-gradient(circle at calc(60% - var(--offset-x) * 0.5) calc(50% + var(--offset-y) * 0.5), var(--color-4), transparent 50%),
+                radial-gradient(circle 800px at calc(20% + var(--offset-x)) calc(30% + var(--offset-y)), var(--color-1), transparent 70%),
+                radial-gradient(circle 800px at calc(80% - var(--offset-x)) calc(20% + var(--offset-y)), var(--color-2), transparent 70%),
+                radial-gradient(circle 900px at calc(40% + var(--offset-x) * 0.5) calc(70% - var(--offset-y)), var(--color-3), transparent 70%),
+                radial-gradient(circle 700px at calc(60% - var(--offset-x) * 0.5) calc(50% + var(--offset-y) * 0.5), var(--color-4), transparent 70%),
                 linear-gradient(135deg, var(--color-1), var(--color-3));
-            animation:
-                drift1 120s ease-in-out infinite,
-                drift2 140s ease-in-out infinite,
-                drift3 160s ease-in-out infinite;
             z-index: 0;
-            transition: opacity 3s ease;
+            filter: blur(40px);
         }
 
         body.loaded::before {
             transition: opacity 180s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Keyframe animations for liquid movement */
-        @keyframes drift1 {
-            0%, 100% { transform: translate(0%, 0%) rotate(0deg); }
-            33% { transform: translate(-5%, 5%) rotate(3deg); }
-            66% { transform: translate(5%, -3%) rotate(-2deg); }
-        }
-
-        @keyframes drift2 {
-            0%, 100% { transform: translate(0%, 0%) scale(1); }
-            50% { transform: translate(3%, 4%) scale(1.05); }
-        }
-
-        @keyframes drift3 {
-            0%, 100% { transform: translate(0%, 0%); }
-            25% { transform: translate(4%, -4%); }
-            50% { transform: translate(-3%, 3%); }
-            75% { transform: translate(2%, -2%); }
         }
 
         /* Grain texture overlay */
@@ -536,9 +513,9 @@
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = (e.clientY / window.innerHeight) * 2 - 1;
 
-            // Scale up the effect for visible swirling
-            targetX = mouseX * 15; // 15% max offset for noticeable movement
-            targetY = mouseY * 15;
+            // Scale up the effect for dramatic liquid swirling
+            targetX = mouseX * 25; // 25% max offset for dramatic movement
+            targetY = mouseY * 25;
 
             isMouseActive = true;
 
