@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calm Intelligence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Crimson+Pro:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,194 +12,61 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            position: relative;
-            transition: background 180s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Grain texture overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .container {
-            position: relative;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 4rem 2rem;
-            z-index: 10;
+            transition: background 180s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .glass-card {
-            backdrop-filter: blur(40px) saturate(180%);
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 32px;
-            padding: 4rem 5rem;
-            box-shadow:
-                0 8px 32px 0 rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-            animation: fadeInScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: clamp(3rem, 12vw, 8.5rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            color: white;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-            text-shadow:
-                0 4px 60px rgba(0, 0, 0, 0.3),
-                0 2px 20px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(180deg,
-                rgba(255, 255, 255, 1) 0%,
-                rgba(255, 255, 255, 0.9) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .tagline {
-            font-family: 'Crimson Pro', Georgia, serif;
-            font-size: clamp(1.1rem, 2.5vw, 1.8rem);
-            font-weight: 300;
-            font-style: italic;
-            color: rgba(255, 255, 255, 0.85);
+        .title {
+            font-size: clamp(2rem, 8vw, 5rem);
+            font-weight: 200;
             letter-spacing: 0.02em;
-            margin-bottom: 3rem;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+            margin-bottom: 1rem;
             transition: color 3s ease;
         }
 
-        .phase-indicator {
-            display: inline-block;
-            font-size: clamp(0.75rem, 1.5vw, 0.95rem);
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.75);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 0.75rem 2rem;
-            border-radius: 100px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow:
-                0 4px 20px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
+        .tagline {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.3em;
+            text-transform: lowercase;
+            transition: color 3s ease;
         }
 
-        .loading {
+        .phase {
             position: fixed;
-            bottom: 3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            transition: opacity 1s ease;
-        }
-
-        /* Ambient light effect */
-        .ambient-light {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 0;
-            transition: all 180s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .light-1 {
-            top: -200px;
-            left: -200px;
-        }
-
-        .light-2 {
-            bottom: -200px;
-            right: -200px;
-        }
-
-        @media (max-width: 1024px) {
-            .glass-card {
-                padding: 3rem 3rem;
-            }
+            bottom: 1.5rem;
+            right: 2rem;
+            font-size: 0.7rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.2em;
+            text-transform: lowercase;
+            transition: color 3s ease;
         }
 
         @media (max-width: 768px) {
-            .glass-card {
-                padding: 2.5rem 2rem;
-                border-radius: 24px;
-            }
-
-            .container {
-                padding: 2rem 1.5rem;
-            }
-
-            .tagline {
-                margin-bottom: 2rem;
-            }
-
-            .ambient-light {
-                width: 400px;
-                height: 400px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .glass-card {
-                padding: 2rem 1.5rem;
+            .phase {
+                bottom: 1rem;
+                right: 1.5rem;
+                font-size: 0.65rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="ambient-light light-1"></div>
-    <div class="ambient-light light-2"></div>
-
-    <div class="container">
-        <div class="glass-card">
-            <h1>Calm Intelligence</h1>
-            <div class="tagline">Where wisdom meets serenity</div>
-            <div class="phase-indicator" id="phase"></div>
-        </div>
-    </div>
-
-    <div class="loading" id="loading">Syncing with the sky...</div>
+    <div class="title">Calm Intelligence</div>
+    <div class="tagline">breathe</div>
+    <div class="phase" id="phase"></div>
 
     <script>
         // Default location: Toronto, Ontario
@@ -212,79 +76,61 @@
             name: 'Toronto'
         };
 
-        // Sophisticated gradient definitions for each phase
+        // Gradient definitions for each phase
         const GRADIENTS = {
             night: {
                 background: ['#0B1120', '#1A1F3A', '#0F1729'],
-                light1: '#1e3a8a',
-                light2: '#581c87',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.85)',
-                phaseColor: 'rgba(255, 255, 255, 0.75)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
+                phaseColor: 'rgba(255, 255, 255, 0.3)'
             },
             dawn: {
                 background: ['#1e1b4b', '#3730a3', '#7e22ce'],
-                light1: '#7c3aed',
-                light2: '#ec4899',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.85)',
-                phaseColor: 'rgba(255, 255, 255, 0.75)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
+                phaseColor: 'rgba(255, 255, 255, 0.3)'
             },
             sunrise: {
                 background: ['#7e22ce', '#dc2626', '#f59e0b'],
-                light1: '#f97316',
-                light2: '#ec4899',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.9)',
-                phaseColor: 'rgba(255, 255, 255, 0.8)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             morning: {
                 background: ['#0ea5e9', '#38bdf8', '#7dd3fc'],
-                light1: '#0ea5e9',
-                light2: '#06b6d4',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.9)',
-                phaseColor: 'rgba(255, 255, 255, 0.8)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             midday: {
                 background: ['#0891b2', '#06b6d4', '#22d3ee'],
-                light1: '#14b8a6',
-                light2: '#3b82f6',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.9)',
-                phaseColor: 'rgba(255, 255, 255, 0.8)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             afternoon: {
                 background: ['#38bdf8', '#60a5fa', '#fbbf24'],
-                light1: '#3b82f6',
-                light2: '#f59e0b',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.85)',
-                phaseColor: 'rgba(255, 255, 255, 0.75)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.65)',
+                phaseColor: 'rgba(255, 255, 255, 0.35)'
             },
             goldenHour: {
                 background: ['#f59e0b', '#f97316', '#fb923c'],
-                light1: '#fb923c',
-                light2: '#dc2626',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.9)',
-                phaseColor: 'rgba(255, 255, 255, 0.8)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             sunset: {
                 background: ['#dc2626', '#e11d48', '#9333ea'],
-                light1: '#e11d48',
-                light2: '#7e22ce',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.9)',
-                phaseColor: 'rgba(255, 255, 255, 0.8)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             dusk: {
                 background: ['#6366f1', '#4f46e5', '#2e1065'],
-                light1: '#6366f1',
-                light2: '#7e22ce',
-                textColor: '#ffffff',
-                taglineColor: 'rgba(255, 255, 255, 0.85)',
-                phaseColor: 'rgba(255, 255, 255, 0.75)'
+                textColor: 'rgba(255, 255, 255, 0.95)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
+                phaseColor: 'rgba(255, 255, 255, 0.3)'
             }
         };
 
@@ -332,16 +178,12 @@
                     };
 
                     updateGradient();
-                    hideLoading();
-
-                    // Update every minute
                     setInterval(updateGradient, 60000);
                 } else {
                     throw new Error('Failed to fetch sun data');
                 }
             } catch (error) {
                 console.error('Error fetching sun data:', error);
-                hideLoading();
             }
         }
 
@@ -354,17 +196,16 @@
 
             const { sunrise, sunset, civilTwilightBegin, civilTwilightEnd } = sunData;
 
-            // Calculate phase transition times
             const dawnStart = civilTwilightBegin.getTime();
-            const dawnEnd = sunrise.getTime() - (30 * 60 * 1000); // 30 min before sunrise
+            const dawnEnd = sunrise.getTime() - (30 * 60 * 1000);
             const sunriseStart = dawnEnd;
-            const sunriseEnd = sunrise.getTime() + (30 * 60 * 1000); // 30 min after sunrise
-            const morningEnd = sunrise.getTime() + (3 * 60 * 60 * 1000); // 3 hours after sunrise
+            const sunriseEnd = sunrise.getTime() + (30 * 60 * 1000);
+            const morningEnd = sunrise.getTime() + (3 * 60 * 60 * 1000);
 
-            const afternoonStart = sunset.getTime() - (4 * 60 * 60 * 1000); // 4 hours before sunset
-            const goldenHourStart = sunset.getTime() - (90 * 60 * 1000); // 90 min before sunset
-            const sunsetStart = sunset.getTime() - (30 * 60 * 1000); // 30 min before sunset
-            const sunsetEnd = sunset.getTime() + (30 * 60 * 1000); // 30 min after sunset
+            const afternoonStart = sunset.getTime() - (4 * 60 * 60 * 1000);
+            const goldenHourStart = sunset.getTime() - (90 * 60 * 1000);
+            const sunsetStart = sunset.getTime() - (30 * 60 * 1000);
+            const sunsetEnd = sunset.getTime() + (30 * 60 * 1000);
             const duskEnd = civilTwilightEnd.getTime();
 
             if (currentTime >= dawnStart && currentTime < dawnEnd) {
@@ -394,35 +235,22 @@
             const gradient = GRADIENTS[phase];
 
             if (gradient) {
-                // Apply sophisticated multi-stop gradient
+                // Simple multi-layered gradient
                 const gradientString = `radial-gradient(ellipse at top left, ${gradient.background[0]}, transparent 50%),
                                        radial-gradient(ellipse at top right, ${gradient.background[1]}, transparent 50%),
                                        radial-gradient(ellipse at bottom, ${gradient.background[2]}, transparent 50%),
                                        linear-gradient(135deg, ${gradient.background[0]}, ${gradient.background[1]}, ${gradient.background[2]})`;
                 document.body.style.background = gradientString;
 
-                // Update ambient lights
-                const light1 = document.querySelector('.light-1');
-                const light2 = document.querySelector('.light-2');
-                if (light1) light1.style.background = gradient.light1;
-                if (light2) light2.style.background = gradient.light2;
-
-                // Update text colors with gradient
-                const h1 = document.querySelector('h1');
-                if (h1) {
-                    h1.style.background = `linear-gradient(180deg, ${gradient.textColor} 0%, ${gradient.textColor}ee 100%)`;
-                    h1.style.webkitBackgroundClip = 'text';
-                    h1.style.backgroundClip = 'text';
-                }
-
-                // Update tagline color
+                // Update text colors
+                const title = document.querySelector('.title');
                 const tagline = document.querySelector('.tagline');
-                if (tagline) {
-                    tagline.style.color = gradient.taglineColor;
-                }
+                const phaseElement = document.getElementById('phase');
+
+                if (title) title.style.color = gradient.textColor;
+                if (tagline) tagline.style.color = gradient.taglineColor;
 
                 // Update phase indicator
-                const phaseElement = document.getElementById('phase');
                 const phaseNames = {
                     night: 'night',
                     dawn: 'dawn',
@@ -434,20 +262,11 @@
                     sunset: 'sunset',
                     dusk: 'dusk'
                 };
+
                 if (phaseElement) {
                     phaseElement.textContent = phaseNames[phase] || '';
                     phaseElement.style.color = gradient.phaseColor;
                 }
-            }
-        }
-
-        function hideLoading() {
-            const loading = document.getElementById('loading');
-            if (loading) {
-                setTimeout(() => {
-                    loading.style.opacity = '0';
-                    setTimeout(() => loading.remove(), 1000);
-                }, 1000);
             }
         }
 
