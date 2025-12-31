@@ -64,6 +64,10 @@
             --color-3: #0F1729;
             --color-4: #1e3a8a;
 
+            /* Mouse interaction offset properties */
+            --offset-x: 0%;
+            --offset-y: 0%;
+
             transition:
                 --color-1 180s cubic-bezier(0.4, 0, 0.2, 1),
                 --color-2 180s cubic-bezier(0.4, 0, 0.2, 1),
@@ -80,10 +84,10 @@
             width: 200%;
             height: 200%;
             background:
-                radial-gradient(circle at 20% 30%, var(--color-1), transparent 50%),
-                radial-gradient(circle at 80% 20%, var(--color-2), transparent 50%),
-                radial-gradient(circle at 40% 70%, var(--color-3), transparent 50%),
-                radial-gradient(circle at 60% 50%, var(--color-4), transparent 50%),
+                radial-gradient(circle at calc(20% + var(--offset-x)) calc(30% + var(--offset-y)), var(--color-1), transparent 50%),
+                radial-gradient(circle at calc(80% - var(--offset-x)) calc(20% + var(--offset-y)), var(--color-2), transparent 50%),
+                radial-gradient(circle at calc(40% + var(--offset-x) * 0.5) calc(70% - var(--offset-y)), var(--color-3), transparent 50%),
+                radial-gradient(circle at calc(60% - var(--offset-x) * 0.5) calc(50% + var(--offset-y) * 0.5), var(--color-4), transparent 50%),
                 linear-gradient(135deg, var(--color-1), var(--color-3));
             animation:
                 drift1 120s ease-in-out infinite,
@@ -510,6 +514,72 @@
                 }
             }
         }
+
+        // Mouse tracking for interactive gradient movement
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isMouseActive = false;
+        let inactivityTimeout = null;
+
+        // Smooth interpolation (lerp)
+        function lerp(start, end, factor) {
+            return start + (end - start) * factor;
+        }
+
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            // Normalize mouse position to -1 to 1 range
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+
+            // Scale down the effect (subtle movement)
+            targetX = mouseX * 3; // 3% max offset
+            targetY = mouseY * 3;
+
+            isMouseActive = true;
+
+            // Reset inactivity timeout
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(() => {
+                isMouseActive = false;
+            }, 2000); // 2 seconds of no movement = drift back to center
+        });
+
+        // Mouse leaves viewport = drift back to center
+        document.addEventListener('mouseleave', () => {
+            isMouseActive = false;
+            targetX = 0;
+            targetY = 0;
+        });
+
+        // Animation loop for smooth gradient movement
+        function animateGradient() {
+            // If mouse is inactive, drift back to center
+            if (!isMouseActive) {
+                targetX = lerp(targetX, 0, 0.02); // Very slow drift back
+                targetY = lerp(targetY, 0, 0.02);
+            }
+
+            // Smooth interpolation with inertia
+            currentX = lerp(currentX, targetX, 0.08); // 8% interpolation = smooth lag
+            currentY = lerp(currentY, targetY, 0.08);
+
+            // Apply transform to gradient background
+            const gradientLayer = document.body;
+            if (gradientLayer) {
+                gradientLayer.style.setProperty('--offset-x', `${currentX}%`);
+                gradientLayer.style.setProperty('--offset-y', `${currentY}%`);
+            }
+
+            requestAnimationFrame(animateGradient);
+        }
+
+        // Start animation loop
+        animateGradient();
 
         // Initialize
         const hasCachedData = checkCachedData();
