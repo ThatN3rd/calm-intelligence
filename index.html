@@ -536,9 +536,9 @@
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = (e.clientY / window.innerHeight) * 2 - 1;
 
-            // Scale down the effect (subtle movement)
-            targetX = mouseX * 3; // 3% max offset
-            targetY = mouseY * 3;
+            // Scale up the effect for visible swirling
+            targetX = mouseX * 15; // 15% max offset for noticeable movement
+            targetY = mouseY * 15;
 
             isMouseActive = true;
 
@@ -560,13 +560,13 @@
         function animateGradient() {
             // If mouse is inactive, drift back to center
             if (!isMouseActive) {
-                targetX = lerp(targetX, 0, 0.02); // Very slow drift back
-                targetY = lerp(targetY, 0, 0.02);
+                targetX = lerp(targetX, 0, 0.03); // Drift back
+                targetY = lerp(targetY, 0, 0.03);
             }
 
-            // Smooth interpolation with inertia
-            currentX = lerp(currentX, targetX, 0.08); // 8% interpolation = smooth lag
-            currentY = lerp(currentY, targetY, 0.08);
+            // Smooth interpolation with inertia - increased for more responsiveness
+            currentX = lerp(currentX, targetX, 0.15); // 15% interpolation = more responsive
+            currentY = lerp(currentY, targetY, 0.15);
 
             // Apply transform to gradient background
             const gradientLayer = document.body;
