@@ -8,6 +8,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
+        /* Register CSS custom properties for smooth color transitions */
+        @property --color-1 {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: #0B1120;
+        }
+
+        @property --color-2 {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: #1A1F3A;
+        }
+
+        @property --color-3 {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: #0F1729;
+        }
+
+        @property --color-4 {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: #1e3a8a;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -31,10 +56,67 @@
             align-items: center;
             justify-content: center;
             background: #0B1120;
-            transition: background 180s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+
+            /* CSS Custom Properties for gradient colors with smooth transitions */
+            --color-1: #0B1120;
+            --color-2: #1A1F3A;
+            --color-3: #0F1729;
+            --color-4: #1e3a8a;
+
+            transition:
+                --color-1 180s cubic-bezier(0.4, 0, 0.2, 1),
+                --color-2 180s cubic-bezier(0.4, 0, 0.2, 1),
+                --color-3 180s cubic-bezier(0.4, 0, 0.2, 1),
+                --color-4 180s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Animated liquid gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 30%, var(--color-1), transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--color-2), transparent 50%),
+                radial-gradient(circle at 40% 70%, var(--color-3), transparent 50%),
+                radial-gradient(circle at 60% 50%, var(--color-4), transparent 50%),
+                linear-gradient(135deg, var(--color-1), var(--color-3));
+            animation:
+                drift1 120s ease-in-out infinite,
+                drift2 140s ease-in-out infinite,
+                drift3 160s ease-in-out infinite;
+            z-index: 0;
+            transition: opacity 3s ease;
+        }
+
+        body.loaded::before {
+            transition: opacity 180s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Keyframe animations for liquid movement */
+        @keyframes drift1 {
+            0%, 100% { transform: translate(0%, 0%) rotate(0deg); }
+            33% { transform: translate(-5%, 5%) rotate(3deg); }
+            66% { transform: translate(5%, -3%) rotate(-2deg); }
+        }
+
+        @keyframes drift2 {
+            0%, 100% { transform: translate(0%, 0%) scale(1); }
+            50% { transform: translate(3%, 4%) scale(1.05); }
+        }
+
+        @keyframes drift3 {
+            0%, 100% { transform: translate(0%, 0%); }
+            25% { transform: translate(4%, -4%); }
+            50% { transform: translate(-3%, 3%); }
+            75% { transform: translate(2%, -2%); }
+        }
+
+        /* Grain texture overlay */
         body::after {
             content: '';
             position: fixed;
@@ -46,10 +128,7 @@
             opacity: 0.015;
             pointer-events: none;
             mix-blend-mode: overlay;
-        }
-
-        body.loaded {
-            transition: background 3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
         }
 
         .title {
@@ -60,6 +139,8 @@
             text-align: center;
             margin-bottom: 1rem;
             transition: color 3s ease, font-variation-settings 3s ease;
+            position: relative;
+            z-index: 10;
         }
 
         .tagline {
@@ -70,6 +151,8 @@
             letter-spacing: 0.05em;
             transition: color 3s ease;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         .phase {
@@ -82,6 +165,7 @@
             letter-spacing: 0.2em;
             text-transform: lowercase;
             transition: color 3s ease;
+            z-index: 10;
         }
 
         @media (max-width: 768px) {
@@ -106,58 +190,58 @@
             name: 'Toronto'
         };
 
-        // Mesh gradient definitions with 5 anchor points
+        // Animated mesh gradient definitions with 4 circles
         const GRADIENTS = {
             night: {
-                mesh: ['#0B1120', '#1A1F3A', '#0F1729', '#1e3a8a', '#0d1117'],
+                colors: ['#0B1120', '#1A1F3A', '#0F1729', '#1e3a8a'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.5)',
                 phaseColor: 'rgba(255, 255, 255, 0.3)'
             },
             dawn: {
-                mesh: ['#1e1b4b', '#3730a3', '#7e22ce', '#581c87', '#2e1065'],
+                colors: ['#1e1b4b', '#3730a3', '#7e22ce', '#581c87'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.5)',
                 phaseColor: 'rgba(255, 255, 255, 0.3)'
             },
             sunrise: {
-                mesh: ['#7e22ce', '#dc2626', '#f59e0b', '#ec4899', '#c026d3'],
+                colors: ['#7e22ce', '#dc2626', '#f59e0b', '#ec4899'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             morning: {
-                mesh: ['#0ea5e9', '#38bdf8', '#7dd3fc', '#06b6d4', '#0891b2'],
+                colors: ['#0ea5e9', '#38bdf8', '#7dd3fc', '#06b6d4'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             midday: {
-                mesh: ['#0891b2', '#06b6d4', '#22d3ee', '#14b8a6', '#0284c7'],
+                colors: ['#0891b2', '#06b6d4', '#22d3ee', '#14b8a6'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             afternoon: {
-                mesh: ['#38bdf8', '#60a5fa', '#fbbf24', '#3b82f6', '#f59e0b'],
+                colors: ['#38bdf8', '#60a5fa', '#fbbf24', '#3b82f6'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.55)',
                 phaseColor: 'rgba(255, 255, 255, 0.35)'
             },
             goldenHour: {
-                mesh: ['#f59e0b', '#f97316', '#fb923c', '#ea580c', '#dc2626'],
+                colors: ['#f59e0b', '#f97316', '#fb923c', '#ea580c'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             sunset: {
-                mesh: ['#dc2626', '#e11d48', '#9333ea', '#be123c', '#7e22ce'],
+                colors: ['#dc2626', '#e11d48', '#9333ea', '#be123c'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             dusk: {
-                mesh: ['#6366f1', '#4f46e5', '#2e1065', '#7c3aed', '#5b21b6'],
+                colors: ['#6366f1', '#4f46e5', '#2e1065', '#7c3aed'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
                 taglineColor: 'rgba(255, 255, 255, 0.5)',
                 phaseColor: 'rgba(255, 255, 255, 0.3)'
@@ -375,23 +459,17 @@
             }
         }
 
-        // Update gradient based on current phase (Mesh Gradient)
+        // Update gradient based on current phase (Animated Liquid Gradient)
         function updateGradient() {
             const phase = getCurrentPhase();
             const gradient = GRADIENTS[phase];
 
             if (gradient) {
-                // Create mesh gradient with 5 radial gradients at different anchor points
-                const meshGradient = `
-                    radial-gradient(ellipse 120% 80% at 0% 0%, ${gradient.mesh[0]}, transparent 50%),
-                    radial-gradient(ellipse 120% 80% at 100% 0%, ${gradient.mesh[1]}, transparent 50%),
-                    radial-gradient(ellipse 100% 100% at 50% 100%, ${gradient.mesh[2]}, transparent 50%),
-                    radial-gradient(ellipse 150% 100% at 30% 50%, ${gradient.mesh[3]}, transparent 60%),
-                    radial-gradient(ellipse 150% 100% at 70% 50%, ${gradient.mesh[4]}, transparent 60%),
-                    linear-gradient(135deg, ${gradient.mesh[0]}, ${gradient.mesh[2]})
-                `.replace(/\s+/g, ' ').trim();
-
-                document.body.style.background = meshGradient;
+                // Update CSS custom properties for the 4 animated gradient circles
+                document.body.style.setProperty('--color-1', gradient.colors[0]);
+                document.body.style.setProperty('--color-2', gradient.colors[1]);
+                document.body.style.setProperty('--color-3', gradient.colors[2]);
+                document.body.style.setProperty('--color-4', gradient.colors[3]);
 
                 // Update text colors
                 const title = document.querySelector('.title');
