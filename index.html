@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calm Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,8 +14,15 @@
             box-sizing: border-box;
         }
 
+        /* Grain texture filter */
+        svg {
+            position: fixed;
+            width: 0;
+            height: 0;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -20,26 +30,46 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            background: #0B1120;
             transition: background 180s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.015;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        body.loaded {
+            transition: background 3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .title {
             font-size: clamp(2rem, 8vw, 5rem);
-            font-weight: 200;
+            font-variation-settings: 'wght' 200;
             letter-spacing: 0.02em;
             color: rgba(255, 255, 255, 0.95);
             text-align: center;
             margin-bottom: 1rem;
-            transition: color 3s ease;
+            transition: color 3s ease, font-variation-settings 3s ease;
         }
 
         .tagline {
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.6);
-            letter-spacing: 0.3em;
-            text-transform: lowercase;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: clamp(0.85rem, 1.8vw, 1rem);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.05em;
             transition: color 3s ease;
+            text-align: center;
         }
 
         .phase {
@@ -65,7 +95,7 @@
 </head>
 <body>
     <div class="title">Calm Intelligence</div>
-    <div class="tagline">breathe</div>
+    <div class="tagline" id="elevation">Calculating...</div>
     <div class="phase" id="phase"></div>
 
     <script>
@@ -76,66 +106,100 @@
             name: 'Toronto'
         };
 
-        // Gradient definitions for each phase
+        // Mesh gradient definitions with 5 anchor points
         const GRADIENTS = {
             night: {
-                background: ['#0B1120', '#1A1F3A', '#0F1729'],
+                mesh: ['#0B1120', '#1A1F3A', '#0F1729', '#1e3a8a', '#0d1117'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.6)',
+                taglineColor: 'rgba(255, 255, 255, 0.5)',
                 phaseColor: 'rgba(255, 255, 255, 0.3)'
             },
             dawn: {
-                background: ['#1e1b4b', '#3730a3', '#7e22ce'],
+                mesh: ['#1e1b4b', '#3730a3', '#7e22ce', '#581c87', '#2e1065'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.6)',
+                taglineColor: 'rgba(255, 255, 255, 0.5)',
                 phaseColor: 'rgba(255, 255, 255, 0.3)'
             },
             sunrise: {
-                background: ['#7e22ce', '#dc2626', '#f59e0b'],
+                mesh: ['#7e22ce', '#dc2626', '#f59e0b', '#ec4899', '#c026d3'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             morning: {
-                background: ['#0ea5e9', '#38bdf8', '#7dd3fc'],
+                mesh: ['#0ea5e9', '#38bdf8', '#7dd3fc', '#06b6d4', '#0891b2'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             midday: {
-                background: ['#0891b2', '#06b6d4', '#22d3ee'],
+                mesh: ['#0891b2', '#06b6d4', '#22d3ee', '#14b8a6', '#0284c7'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             afternoon: {
-                background: ['#38bdf8', '#60a5fa', '#fbbf24'],
+                mesh: ['#38bdf8', '#60a5fa', '#fbbf24', '#3b82f6', '#f59e0b'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.65)',
+                taglineColor: 'rgba(255, 255, 255, 0.55)',
                 phaseColor: 'rgba(255, 255, 255, 0.35)'
             },
             goldenHour: {
-                background: ['#f59e0b', '#f97316', '#fb923c'],
+                mesh: ['#f59e0b', '#f97316', '#fb923c', '#ea580c', '#dc2626'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             sunset: {
-                background: ['#dc2626', '#e11d48', '#9333ea'],
+                mesh: ['#dc2626', '#e11d48', '#9333ea', '#be123c', '#7e22ce'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.7)',
+                taglineColor: 'rgba(255, 255, 255, 0.6)',
                 phaseColor: 'rgba(255, 255, 255, 0.4)'
             },
             dusk: {
-                background: ['#6366f1', '#4f46e5', '#2e1065'],
+                mesh: ['#6366f1', '#4f46e5', '#2e1065', '#7c3aed', '#5b21b6'],
                 textColor: 'rgba(255, 255, 255, 0.95)',
-                taglineColor: 'rgba(255, 255, 255, 0.6)',
+                taglineColor: 'rgba(255, 255, 255, 0.5)',
                 phaseColor: 'rgba(255, 255, 255, 0.3)'
             }
         };
 
         let currentLocation = null;
         let sunData = null;
+        let isFirstLoad = true;
+
+        // Check localStorage for cached sun data
+        function checkCachedData() {
+            const cached = localStorage.getItem('sunData');
+            const cachedLocation = localStorage.getItem('location');
+
+            if (cached && cachedLocation) {
+                try {
+                    sunData = JSON.parse(cached);
+                    // Convert string dates back to Date objects
+                    sunData.sunrise = new Date(sunData.sunrise);
+                    sunData.sunset = new Date(sunData.sunset);
+                    sunData.solarNoon = new Date(sunData.solarNoon);
+                    sunData.civilTwilightBegin = new Date(sunData.civilTwilightBegin);
+                    sunData.civilTwilightEnd = new Date(sunData.civilTwilightEnd);
+
+                    currentLocation = JSON.parse(cachedLocation);
+
+                    // Check if data is from today
+                    const cachedDate = new Date(sunData.sunrise).toDateString();
+                    const today = new Date().toDateString();
+
+                    if (cachedDate === today) {
+                        updateGradient();
+                        updateSolarElevation();
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Error parsing cached data:', e);
+                }
+            }
+            return false;
+        }
 
         // Get user's location
         function getLocation() {
@@ -146,16 +210,19 @@
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
                         };
+                        localStorage.setItem('location', JSON.stringify(currentLocation));
                         fetchSunData();
                     },
                     error => {
                         console.log('Geolocation denied, using default location');
                         currentLocation = DEFAULT_LOCATION;
+                        localStorage.setItem('location', JSON.stringify(currentLocation));
                         fetchSunData();
                     }
                 );
             } else {
                 currentLocation = DEFAULT_LOCATION;
+                localStorage.setItem('location', JSON.stringify(currentLocation));
                 fetchSunData();
             }
         }
@@ -177,8 +244,17 @@
                         civilTwilightEnd: new Date(data.results.civil_twilight_end)
                     };
 
+                    // Cache sun data
+                    localStorage.setItem('sunData', JSON.stringify(sunData));
+
                     updateGradient();
-                    setInterval(updateGradient, 60000);
+                    updateSolarElevation();
+
+                    // Update every minute
+                    setInterval(() => {
+                        updateGradient();
+                        updateSolarElevation();
+                    }, 60000);
                 } else {
                     throw new Error('Failed to fetch sun data');
                 }
@@ -229,25 +305,106 @@
             }
         }
 
-        // Update gradient based on current phase
+        // Calculate solar elevation angle
+        function calculateSolarElevation() {
+            if (!sunData || !currentLocation) return null;
+
+            const now = new Date();
+            const lat = currentLocation.lat * Math.PI / 180; // Convert to radians
+            const lng = currentLocation.lng;
+
+            // Calculate day of year
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const dayOfYear = Math.floor(diff / oneDay);
+
+            // Solar declination (simplified)
+            const declination = -23.44 * Math.cos((360 / 365) * (dayOfYear + 10) * Math.PI / 180);
+            const declinationRad = declination * Math.PI / 180;
+
+            // Hour angle
+            const hours = now.getHours() + now.getMinutes() / 60;
+            const hourAngle = (hours - 12) * 15; // 15 degrees per hour
+            const hourAngleRad = hourAngle * Math.PI / 180;
+
+            // Solar elevation angle (altitude)
+            const elevation = Math.asin(
+                Math.sin(lat) * Math.sin(declinationRad) +
+                Math.cos(lat) * Math.cos(declinationRad) * Math.cos(hourAngleRad)
+            );
+
+            return elevation * 180 / Math.PI; // Convert to degrees
+        }
+
+        // Update solar elevation display
+        function updateSolarElevation() {
+            const elevation = calculateSolarElevation();
+            const elevationElement = document.getElementById('elevation');
+
+            if (elevation !== null && elevationElement) {
+                const sign = elevation >= 0 ? '+' : '';
+                elevationElement.textContent = `Elevation ${sign}${elevation.toFixed(1)}°`;
+            }
+        }
+
+        // Calculate dynamic font weight based on solar position
+        function calculateFontWeight() {
+            if (!sunData) return 200;
+
+            const now = new Date();
+            const currentTime = now.getTime();
+            const sunrise = sunData.sunrise.getTime();
+            const sunset = sunData.sunset.getTime();
+            const solarNoon = sunData.solarNoon.getTime();
+
+            // Night: weight 100-200
+            if (currentTime < sunrise || currentTime > sunset) {
+                return 200;
+            }
+
+            // Day: transition from 200 (sunrise) to 400 (noon) to 200 (sunset)
+            if (currentTime <= solarNoon) {
+                // Morning: 200 → 400
+                const progress = (currentTime - sunrise) / (solarNoon - sunrise);
+                return 200 + (progress * 200);
+            } else {
+                // Afternoon: 400 → 200
+                const progress = (currentTime - solarNoon) / (sunset - solarNoon);
+                return 400 - (progress * 200);
+            }
+        }
+
+        // Update gradient based on current phase (Mesh Gradient)
         function updateGradient() {
             const phase = getCurrentPhase();
             const gradient = GRADIENTS[phase];
 
             if (gradient) {
-                // Simple multi-layered gradient
-                const gradientString = `radial-gradient(ellipse at top left, ${gradient.background[0]}, transparent 50%),
-                                       radial-gradient(ellipse at top right, ${gradient.background[1]}, transparent 50%),
-                                       radial-gradient(ellipse at bottom, ${gradient.background[2]}, transparent 50%),
-                                       linear-gradient(135deg, ${gradient.background[0]}, ${gradient.background[1]}, ${gradient.background[2]})`;
-                document.body.style.background = gradientString;
+                // Create mesh gradient with 5 radial gradients at different anchor points
+                const meshGradient = `
+                    radial-gradient(ellipse 120% 80% at 0% 0%, ${gradient.mesh[0]}, transparent 50%),
+                    radial-gradient(ellipse 120% 80% at 100% 0%, ${gradient.mesh[1]}, transparent 50%),
+                    radial-gradient(ellipse 100% 100% at 50% 100%, ${gradient.mesh[2]}, transparent 50%),
+                    radial-gradient(ellipse 150% 100% at 30% 50%, ${gradient.mesh[3]}, transparent 60%),
+                    radial-gradient(ellipse 150% 100% at 70% 50%, ${gradient.mesh[4]}, transparent 60%),
+                    linear-gradient(135deg, ${gradient.mesh[0]}, ${gradient.mesh[2]})
+                `.replace(/\s+/g, ' ').trim();
+
+                document.body.style.background = meshGradient;
 
                 // Update text colors
                 const title = document.querySelector('.title');
                 const tagline = document.querySelector('.tagline');
                 const phaseElement = document.getElementById('phase');
 
-                if (title) title.style.color = gradient.textColor;
+                if (title) {
+                    title.style.color = gradient.textColor;
+                    // Update font weight based on solar cycle
+                    const weight = calculateFontWeight();
+                    title.style.fontVariationSettings = `'wght' ${weight}`;
+                }
+
                 if (tagline) tagline.style.color = gradient.taglineColor;
 
                 // Update phase indicator
@@ -267,11 +424,29 @@
                     phaseElement.textContent = phaseNames[phase] || '';
                     phaseElement.style.color = gradient.phaseColor;
                 }
+
+                // Apply faster transition on first load
+                if (isFirstLoad) {
+                    document.body.classList.add('loaded');
+                    isFirstLoad = false;
+                }
             }
         }
 
         // Initialize
-        getLocation();
+        const hasCachedData = checkCachedData();
+
+        if (!hasCachedData) {
+            getLocation();
+        } else {
+            // Still fetch fresh data in background
+            getLocation();
+            // Set up interval for updates
+            setInterval(() => {
+                updateGradient();
+                updateSolarElevation();
+            }, 60000);
+        }
     </script>
 </body>
 </html>
