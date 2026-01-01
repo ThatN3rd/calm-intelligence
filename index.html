@@ -134,6 +134,7 @@
             text-align: center;
             position: relative;
             z-index: 10;
+            font-variant-numeric: tabular-nums;
         }
 
         .phase {
@@ -160,7 +161,7 @@
 </head>
 <body>
     <div class="title">Calm Intelligence</div>
-    <div class="tagline" id="elevation">Calculating...</div>
+    <div class="tagline" id="clock">00:00:00</div>
     <div class="phase" id="phase"></div>
 
     <script>
@@ -256,7 +257,6 @@
 
                     if (cachedDate === today) {
                         updateGradient();
-                        updateSolarElevation();
                         return true;
                     }
                 } catch (e) {
@@ -294,12 +294,10 @@
                     localStorage.setItem('sunData', JSON.stringify(sunData));
 
                     updateGradient();
-                    updateSolarElevation();
 
                     // Update every minute
                     setInterval(() => {
                         updateGradient();
-                        updateSolarElevation();
                     }, 60000);
                 } else {
                     throw new Error('Failed to fetch sun data');
@@ -351,48 +349,22 @@
             }
         }
 
-        // Calculate solar elevation angle
-        function calculateSolarElevation() {
-            if (!sunData || !currentLocation) return null;
-
+        // Update clock display
+        function updateClock() {
             const now = new Date();
-            const lat = currentLocation.lat * Math.PI / 180; // Convert to radians
-            const lng = currentLocation.lng;
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
 
-            // Calculate day of year
-            const start = new Date(now.getFullYear(), 0, 0);
-            const diff = now - start;
-            const oneDay = 1000 * 60 * 60 * 24;
-            const dayOfYear = Math.floor(diff / oneDay);
-
-            // Solar declination (simplified)
-            const declination = -23.44 * Math.cos((360 / 365) * (dayOfYear + 10) * Math.PI / 180);
-            const declinationRad = declination * Math.PI / 180;
-
-            // Hour angle
-            const hours = now.getHours() + now.getMinutes() / 60;
-            const hourAngle = (hours - 12) * 15; // 15 degrees per hour
-            const hourAngleRad = hourAngle * Math.PI / 180;
-
-            // Solar elevation angle (altitude)
-            const elevation = Math.asin(
-                Math.sin(lat) * Math.sin(declinationRad) +
-                Math.cos(lat) * Math.cos(declinationRad) * Math.cos(hourAngleRad)
-            );
-
-            return elevation * 180 / Math.PI; // Convert to degrees
-        }
-
-        // Update solar elevation display
-        function updateSolarElevation() {
-            const elevation = calculateSolarElevation();
-            const elevationElement = document.getElementById('elevation');
-
-            if (elevation !== null && elevationElement) {
-                const sign = elevation >= 0 ? '+' : '';
-                elevationElement.textContent = `Elevation ${sign}${elevation.toFixed(1)}°`;
+            const clockElement = document.getElementById('clock');
+            if (clockElement) {
+                clockElement.textContent = `${hours} : ${minutes} : ${seconds}`;
             }
         }
+
+        // Start clock updates
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
 
         // Calculate dynamic font weight based on solar position
         function calculateFontWeight() {
@@ -494,9 +466,9 @@
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = (e.clientY / window.innerHeight) * 2 - 1;
 
-            // Scale up the effect for dramatic liquid swirling
-            targetX = mouseX * 25; // 25% max offset for dramatic movement
-            targetY = mouseY * 25;
+            // Tighter, more refined swirling effect
+            targetX = mouseX * 8; // 8% max offset for subtle luxury movement
+            targetY = mouseY * 8;
 
             isMouseActive = true;
 
@@ -550,7 +522,6 @@
             // Set up interval for updates
             setInterval(() => {
                 updateGradient();
-                updateSolarElevation();
             }, 60000);
         }
     </script>
