@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calm Intelligence</title>
+    <title>Hardy Concert Countdown</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
@@ -160,8 +160,8 @@
     </style>
 </head>
 <body>
-    <div class="title">Calm Intelligence</div>
-    <div class="tagline" id="clock">00:00:00</div>
+    <div class="title">Hardy Concert</div>
+    <div class="tagline" id="clock">00:00:00:00</div>
     <div class="phase" id="phase"></div>
 
     <script>
@@ -349,20 +349,35 @@
             }
         }
 
-        // Update clock display
+        // Hardy concert countdown
+        const concertDate = new Date('2026-02-07T19:30:00'); // Feb 7, 2026 at 7:30 PM
+
+        // Update countdown display
         function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const diff = concertDate - now;
+
+            if (diff <= 0) {
+                // Concert time!
+                const clockElement = document.getElementById('clock');
+                if (clockElement) {
+                    clockElement.textContent = `IT'S TIME`;
+                }
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
             const clockElement = document.getElementById('clock');
             if (clockElement) {
-                clockElement.textContent = `${hours} : ${minutes} : ${seconds}`;
+                clockElement.textContent = `${String(days).padStart(2, '0')} : ${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
             }
         }
 
-        // Start clock updates
+        // Start countdown updates
         setInterval(updateClock, 1000);
         updateClock(); // Initial call
 
