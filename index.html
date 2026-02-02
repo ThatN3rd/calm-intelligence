@@ -266,26 +266,6 @@
             }
         }
 
-        .phase {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 2rem;
-            font-size: 0.7rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 0.2em;
-            text-transform: lowercase;
-            transition: color 3s ease;
-            z-index: 10;
-        }
-
-        @media (max-width: 768px) {
-            .phase {
-                bottom: 1rem;
-                right: 1.5rem;
-                font-size: 0.65rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -302,7 +282,6 @@
         </svg>
         Listen to the Setlist
     </a>
-    <div class="phase" id="phase"></div>
 
     <script>
         // Default location: Listowel, Ontario
@@ -317,56 +296,47 @@
             night: {
                 colors: ['#1a0f0a', '#2d1810', '#3d1f14', '#4a2618'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.4)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             dawn: {
                 colors: ['#4a2618', '#6b3a1e', '#8b4513', '#a0522d'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.4)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             sunrise: {
                 colors: ['#d2691e', '#e8701e', '#ff7f50', '#ff8c42'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.5)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             morning: {
                 colors: ['#daa520', '#cd853f', '#d2691e', '#c47335'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.5)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             midday: {
                 colors: ['#e6a84e', '#d4933e', '#c47d3a', '#b86f3a'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.5)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             afternoon: {
                 colors: ['#cd853f', '#c47335', '#b8602e', '#a0522d'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.5)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             goldenHour: {
                 colors: ['#ff8c42', '#ff7f50', '#e8701e', '#d2691e'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.5)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             sunset: {
                 colors: ['#d2691e', '#c1440e', '#a0311e', '#8b2500'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.5)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             },
             dusk: {
                 colors: ['#8b4513', '#6b3410', '#4a2618', '#3d1f14'],
                 textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)',
-                phaseColor: 'rgba(255, 255, 255, 0.4)'
+                taglineColor: 'rgba(255, 255, 255, 1)'
             }
         };
 
@@ -572,7 +542,6 @@
                 const supporting = document.querySelector('.supporting');
                 const tagline = document.querySelector('.tagline');
                 const labels = document.querySelector('.countdown-labels');
-                const phaseElement = document.getElementById('phase');
 
                 if (title) {
                     title.style.color = gradient.textColor;
@@ -600,24 +569,6 @@
 
                 if (labels) {
                     labels.style.color = gradient.taglineColor;
-                }
-
-                // Update phase indicator
-                const phaseNames = {
-                    night: 'night',
-                    dawn: 'dawn',
-                    sunrise: 'sunrise',
-                    morning: 'morning',
-                    midday: 'midday',
-                    afternoon: 'afternoon',
-                    goldenHour: 'golden hour',
-                    sunset: 'sunset',
-                    dusk: 'dusk'
-                };
-
-                if (phaseElement) {
-                    phaseElement.textContent = phaseNames[phase] || '';
-                    phaseElement.style.color = gradient.phaseColor;
                 }
 
                 // Apply faster transition on first load
