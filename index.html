@@ -129,17 +129,54 @@
                 0 4px 40px rgba(0, 0, 0, 0.5);
         }
 
+        .tour-name {
+            font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+            font-variation-settings: 'wght' 700;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
         .subtitle {
-            font-size: clamp(1rem, 3vw, 1.8rem);
+            font-size: clamp(0.85rem, 2vw, 1.1rem);
+            font-variation-settings: 'wght' 500;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.75);
+            text-align: center;
+            margin-bottom: 0.3rem;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .venue {
+            font-size: clamp(1.2rem, 3.5vw, 2rem);
+            font-variation-settings: 'wght' 600;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .supporting {
+            font-size: clamp(0.75rem, 1.8vw, 1rem);
             font-variation-settings: 'wght' 400;
             letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.6);
             text-align: center;
             text-transform: uppercase;
             margin-bottom: 3rem;
             position: relative;
             z-index: 10;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
         }
 
         .tagline {
@@ -196,7 +233,10 @@
 </head>
 <body>
     <div class="title">HARDY</div>
+    <div class="tour-name">Country! Country! Tour!</div>
     <div class="subtitle">February 7, 2026 • 7:00 PM</div>
+    <div class="venue">Canada Life Place • London, ON</div>
+    <div class="supporting">with Cameron Whitcomb & McCoy Moore</div>
     <div class="tagline" id="clock">00:00:00:00</div>
     <div class="countdown-labels">DAYS     HOURS     MINS     SECS</div>
     <div class="phase" id="phase"></div>
@@ -463,7 +503,10 @@
 
                 // Update text colors
                 const title = document.querySelector('.title');
+                const tourName = document.querySelector('.tour-name');
                 const subtitle = document.querySelector('.subtitle');
+                const venue = document.querySelector('.venue');
+                const supporting = document.querySelector('.supporting');
                 const tagline = document.querySelector('.tagline');
                 const labels = document.querySelector('.countdown-labels');
                 const phaseElement = document.getElementById('phase');
@@ -472,8 +515,20 @@
                     title.style.color = gradient.textColor;
                 }
 
+                if (tourName) {
+                    tourName.style.color = gradient.textColor;
+                }
+
                 if (subtitle) {
                     subtitle.style.color = gradient.textColor;
+                }
+
+                if (venue) {
+                    venue.style.color = gradient.textColor;
+                }
+
+                if (supporting) {
+                    supporting.style.color = 'rgba(255, 255, 255, 0.6)';
                 }
 
                 if (tagline) {
