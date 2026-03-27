@@ -702,23 +702,274 @@
     to { opacity: 1; }
   }
 
+  /* MOBILE NAV MENU */
+  .nav-mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-mobile-toggle span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--text);
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  .nav-mobile-toggle.open span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+
+  .nav-mobile-toggle.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .nav-mobile-toggle.open span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
+    z-index: 99;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-menu.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .mobile-menu a {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--text);
+    text-decoration: none;
+    padding: 16px 0;
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+
+  .mobile-menu a:hover { color: var(--accent); }
+
+  .mobile-menu-cta {
+    margin-top: 32px;
+    font-family: var(--sans) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.04em !important;
+    color: var(--bg) !important;
+    background: var(--text);
+    padding: 14px 32px !important;
+    border-radius: 2px;
+  }
+
   /* RESPONSIVE */
-  @media (max-width: 900px) {
-    nav { padding: 18px 24px; }
+  @media (max-width: 768px) {
+
+    /* Nav */
+    nav { padding: 18px 20px; }
     .nav-links { display: none; }
-    .hero { padding: 100px 24px 60px; }
-    .hero-scroll { left: 24px; }
-    .problem { padding: 80px 24px; }
-    .what { padding: 80px 24px; }
-    .pillars { grid-template-columns: 1fr; }
-    .articles { padding: 80px 24px; }
-    .articles-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-    .articles-header p { text-align: left; }
+    .nav-cta { display: none; }
+    .nav-mobile-toggle { display: flex; }
+    .mobile-menu { display: flex; }
+
+    /* Hero */
+    .hero {
+      padding: 90px 20px 70px;
+      min-height: 100svh;
+    }
+
+    .hero-eyebrow { margin-bottom: 20px; }
+
+    .hero-headline {
+      font-size: clamp(36px, 10vw, 52px);
+      margin-bottom: 24px;
+      line-height: 1.08;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 100%;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 24px;
+      font-size: 14px;
+    }
+
+    .btn-ghost {
+      font-size: 14px;
+      padding: 4px 0;
+    }
+
+    .hero-scroll { display: none; }
+
+    /* Problem */
+    .problem {
+      padding: 64px 20px;
+    }
+
+    .problem p {
+      font-size: clamp(19px, 5.5vw, 24px);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* What */
+    .what { padding: 64px 20px; }
+
+    .what-headline { margin-bottom: 16px; }
+
+    .what-desc {
+      font-size: 15px;
+      margin-bottom: 48px;
+    }
+
+    .pillars {
+      grid-template-columns: 1fr;
+      gap: 1px;
+    }
+
+    .pillar { padding: 32px 24px; }
+
+    .pillar-title { font-size: 22px; }
+
+    /* Articles */
+    .articles {
+      padding: 64px 20px;
+      max-width: 100%;
+    }
+
+    .articles-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .articles-header p {
+      text-align: left;
+      max-width: 100%;
+    }
+
     .article-grid { grid-template-columns: 1fr; }
-    .assessment { margin: 0 24px 80px; padding: 60px 32px; }
-    .assessment-inner { grid-template-columns: 1fr; gap: 48px; }
-    .newsletter { padding: 80px 24px; }
-    footer { padding: 32px 24px; flex-direction: column; gap: 24px; text-align: center; }
+
+    .article-card,
+    .article-card.featured {
+      padding: 32px 24px;
+    }
+
+    .article-card.featured .article-title {
+      font-size: 24px;
+    }
+
+    .article-title { font-size: 20px; }
+
+    /* Assessment */
+    .assessment {
+      margin: 0 0 64px;
+      padding: 56px 20px;
+      border-radius: 0;
+    }
+
+    .assessment-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .assessment-headline {
+      font-size: clamp(26px, 7vw, 38px);
+    }
+
+    .assessment-body { font-size: 14px; }
+
+    .btn-light {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 24px;
+    }
+
+    .score-preview { padding: 24px 20px; }
+
+    /* Newsletter */
+    .newsletter { padding: 64px 20px; }
+
+    .newsletter h2 {
+      font-size: clamp(24px, 7vw, 36px);
+    }
+
+    .newsletter p { font-size: 15px; margin-bottom: 32px; }
+
+    .newsletter-form {
+      flex-direction: column;
+      border: none;
+      gap: 10px;
+      max-width: 100%;
+    }
+
+    .newsletter-form input {
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      font-size: 16px; /* prevents iOS zoom on focus */
+      border-radius: 2px;
+    }
+
+    .newsletter-form button {
+      padding: 16px 24px;
+      font-size: 14px;
+      border-radius: 2px;
+      width: 100%;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 20px;
+      flex-direction: column;
+      gap: 28px;
+      text-align: center;
+    }
+
+    .footer-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+  }
+
+  /* Small phones */
+  @media (max-width: 380px) {
+    .hero-headline { font-size: 34px; }
+    .problem p { font-size: 18px; }
   }
 </style>
 </head>
@@ -732,7 +983,20 @@
     <li><a href="#">About</a></li>
   </ul>
   <a href="#assessment" class="nav-cta">Take the Score</a>
+  <button class="nav-mobile-toggle" id="menuToggle" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#journal" class="mobile-menu-link">Journal</a>
+  <a href="#assessment" class="mobile-menu-link">Tools</a>
+  <a href="#" class="mobile-menu-link">About</a>
+  <a href="#assessment" class="mobile-menu-cta">Take the Score</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -874,6 +1138,24 @@
 </footer>
 
 <script>
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  document.querySelectorAll('.mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      menuToggle.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
   // Scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
   const revealObserver = new IntersectionObserver((entries) => {
