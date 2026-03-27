@@ -1,663 +1,927 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardy Concert Countdown</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <style>
-        /* Register CSS custom properties for smooth color transitions */
-        @property --color-1 {
-            syntax: '<color>';
-            inherits: false;
-            initial-value: #0B1120;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Intelligence. Clear thinking for a noisier world.</title>
+<meta name="description" content="For the overwhelmed thinker who's done with generic advice. Calm Intelligence is a space for developing clearer thinking, emotional steadiness, and intentional living.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        @property --color-2 {
-            syntax: '<color>';
-            inherits: false;
-            initial-value: #1A1F3A;
-        }
+  :root {
+    --bg: #F4F1EC;
+    --bg-alt: #EDE9E2;
+    --bg-dark: #1C1C1A;
+    --text: #1E1D1B;
+    --text-mid: #5A5750;
+    --text-light: #9A948A;
+    --accent: #7B8C7E;
+    --accent-warm: #C4A882;
+    --accent-blue: #7D9AA0;
+    --border: rgba(30,29,27,0.1);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
 
-        @property --color-3 {
-            syntax: '<color>';
-            inherits: false;
-            initial-value: #0F1729;
-        }
+  html { scroll-behavior: smooth; }
 
-        @property --color-4 {
-            syntax: '<color>';
-            inherits: false;
-            initial-value: #1e3a8a;
-        }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 52px;
+    background: rgba(244,241,236,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
 
-        /* Grain texture filter */
-        svg {
-            position: fixed;
-            width: 0;
-            height: 0;
-        }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    text-decoration: none;
+  }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #0B1120;
-            position: relative;
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
 
-            /* CSS Custom Properties for gradient colors with smooth transitions */
-            --color-1: #0B1120;
-            --color-2: #1A1F3A;
-            --color-3: #0F1729;
-            --color-4: #1e3a8a;
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
 
-            /* Mouse interaction offset properties */
-            --offset-x: 0%;
-            --offset-y: 0%;
+  .nav-links a:hover { color: var(--text); }
 
-            transition:
-                --color-1 180s cubic-bezier(0.4, 0, 0.2, 1),
-                --color-2 180s cubic-bezier(0.4, 0, 0.2, 1),
-                --color-3 180s cubic-bezier(0.4, 0, 0.2, 1),
-                --color-4 180s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--bg);
+    background: var(--text);
+    padding: 10px 22px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
 
-        /* Animated liquid gradient background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle 800px at calc(20% + var(--offset-x)) calc(30% + var(--offset-y)), var(--color-1), transparent 70%),
-                radial-gradient(circle 800px at calc(80% - var(--offset-x)) calc(20% + var(--offset-y)), var(--color-2), transparent 70%),
-                radial-gradient(circle 900px at calc(40% + var(--offset-x) * 0.5) calc(70% - var(--offset-y)), var(--color-3), transparent 70%),
-                radial-gradient(circle 700px at calc(60% - var(--offset-x) * 0.5) calc(50% + var(--offset-y) * 0.5), var(--color-4), transparent 70%),
-                linear-gradient(135deg, var(--color-1), var(--color-3));
-            z-index: 0;
-            filter: blur(40px);
-        }
+  .nav-cta:hover { opacity: 0.82; }
 
-        body.loaded::before {
-            transition: opacity 180s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 52px 80px;
+    position: relative;
+    overflow: hidden;
+  }
 
-        /* Grain texture overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.015;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            z-index: 1;
-        }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,168,130,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
-        .title {
-            font-size: clamp(3.5rem, 15vw, 10rem);
-            font-variation-settings: 'wght' 800;
-            letter-spacing: -0.02em;
-            color: rgba(255, 255, 255, 1);
-            text-align: center;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            transition: color 3s ease, font-variation-settings 3s ease;
-            position: relative;
-            z-index: 10;
-            text-shadow:
-                0 0 30px rgba(255, 255, 255, 0.3),
-                0 0 60px rgba(255, 100, 100, 0.2),
-                0 4px 40px rgba(0, 0, 0, 0.5);
-        }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 10%; left: 5%;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(125,154,160,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
-        .tour-name {
-            font-size: clamp(0.9rem, 2.5vw, 1.3rem);
-            font-variation-settings: 'wght' 700;
-            letter-spacing: 0.3em;
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 10;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
 
-        .subtitle {
-            font-size: clamp(0.85rem, 2vw, 1.1rem);
-            font-variation-settings: 'wght' 500;
-            letter-spacing: 0.1em;
-            color: rgba(255, 255, 255, 0.75);
-            text-align: center;
-            margin-bottom: 0.3rem;
-            position: relative;
-            z-index: 10;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        }
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(42px, 6vw, 82px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    max-width: 820px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
 
-        .venue {
-            font-size: clamp(1.2rem, 3.5vw, 2rem);
-            font-variation-settings: 'wght' 600;
-            letter-spacing: 0.05em;
-            color: rgba(255, 255, 255, 0.95);
-            text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 10;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
 
-        .supporting {
-            font-size: clamp(0.75rem, 1.8vw, 1rem);
-            font-variation-settings: 'wght' 400;
-            letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.6);
-            text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 3rem;
-            position: relative;
-            z-index: 10;
-        }
+  .hero-sub {
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-mid);
+    max-width: 520px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.6s forwards;
+  }
 
-        .tagline {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            font-size: clamp(1.5rem, 4vw, 3rem);
-            font-weight: 600;
-            color: rgba(255, 255, 255, 1);
-            letter-spacing: 0.1em;
-            transition: color 3s ease;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            font-variant-numeric: tabular-nums;
-            text-shadow:
-                0 0 20px rgba(255, 255, 255, 0.4),
-                0 4px 30px rgba(0, 0, 0, 0.4);
-            margin-bottom: 1rem;
-        }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.8s forwards;
+  }
 
-        .countdown-labels {
-            font-family: 'Inter', sans-serif;
-            font-size: clamp(0.7rem, 1.2vw, 0.9rem);
-            font-weight: 300;
-            letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.6);
-            text-transform: uppercase;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            margin-bottom: 3rem;
-        }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text);
+    color: var(--bg);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    padding: 15px 30px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
 
-        .spotify-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1.1rem 2.8rem;
-            background: rgba(30, 215, 96, 0.15);
-            border: 2px solid rgba(30, 215, 96, 0.4);
-            border-radius: 50px;
-            color: rgba(255, 255, 255, 0.95);
-            font-family: 'Inter', sans-serif;
-            font-size: clamp(0.85rem, 1.8vw, 1rem);
-            font-variation-settings: 'wght' 600;
-            letter-spacing: 0.08em;
-            text-decoration: none;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 10;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            white-space: nowrap;
-        }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
 
-        .spotify-button:hover {
-            background: rgba(30, 215, 96, 0.25);
-            border-color: rgba(30, 215, 96, 0.6);
-            transform: translateY(-2px);
-            box-shadow:
-                0 0 30px rgba(30, 215, 96, 0.3),
-                0 10px 30px rgba(0, 0, 0, 0.3);
-        }
+  .btn-ghost {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-mid);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
 
-        .spotify-button:active {
-            transform: translateY(0);
-        }
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-mid); }
 
-        .spotify-icon {
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-            fill: currentColor;
-        }
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px; left: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.4s forwards;
+  }
 
-        @media (max-width: 768px) {
-            .spotify-button {
-                padding: 0.9rem 2rem;
-                gap: 0.65rem;
-                font-size: clamp(0.75rem, 3.5vw, 0.9rem);
-            }
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--text-light);
+  }
 
-            .spotify-icon {
-                width: 18px;
-                height: 18px;
-            }
-        }
+  .scroll-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
 
-    </style>
+  /* PROBLEM */
+  .problem {
+    padding: 120px 52px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .problem p {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .problem p:last-child { margin-bottom: 0; }
+
+  .problem p strong {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* WHAT IT IS */
+  .what {
+    padding: 100px 52px;
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .what-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 52px;
+  }
+
+  .what-headline {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 300;
+    line-height: 1.25;
+    color: var(--text);
+    max-width: 640px;
+    margin-bottom: 20px;
+  }
+
+  .what-desc {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--text-mid);
+    max-width: 540px;
+    margin-bottom: 72px;
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .pillar {
+    background: var(--bg-alt);
+    padding: 44px 40px;
+    transition: background 0.25s;
+  }
+
+  .pillar:hover { background: var(--bg); }
+
+  .pillar-number {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+
+  .pillar-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .pillar-body {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-mid);
+  }
+
+  /* ARTICLES */
+  .articles {
+    padding: 120px 52px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .articles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 56px;
+  }
+
+  .articles-header h2 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 300;
+    line-height: 1.2;
+  }
+
+  .articles-header p {
+    font-size: 14px;
+    color: var(--text-mid);
+    font-weight: 300;
+    max-width: 260px;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .article-card {
+    background: var(--bg);
+    padding: 44px 36px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: background 0.25s;
+    text-decoration: none;
+  }
+
+  .article-card:hover { background: var(--bg-alt); }
+
+  .article-card.featured { padding: 52px 44px; }
+
+  .article-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .article-title {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .article-card.featured .article-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .article-desc {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-mid);
+    margin-bottom: 28px;
+  }
+
+  .article-link {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .article-link span {
+    width: 20px;
+    height: 1px;
+    background: var(--text);
+    display: inline-block;
+    transition: width 0.25s;
+  }
+
+  .article-card:hover .article-link span { width: 32px; }
+
+  /* ASSESSMENT */
+  .assessment {
+    margin: 0 52px 120px;
+    background: var(--bg-dark);
+    padding: 96px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .assessment::before {
+    content: '';
+    position: absolute;
+    top: -30%; right: -5%;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(125,154,160,0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .assessment::after {
+    content: '';
+    position: absolute;
+    bottom: -20%; left: 20%;
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,168,130,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .assessment-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .assessment-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 24px;
+  }
+
+  .assessment-headline {
+    font-family: var(--serif);
+    font-size: clamp(30px, 3.5vw, 50px);
+    font-weight: 300;
+    line-height: 1.2;
+    color: #F4F1EC;
+    margin-bottom: 24px;
+  }
+
+  .assessment-body {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(244,241,236,0.6);
+    margin-bottom: 40px;
+  }
+
+  .btn-light {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    padding: 15px 30px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .btn-light:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .assessment-meta {
+    font-size: 12px;
+    color: rgba(244,241,236,0.35);
+    margin-top: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .score-preview {
+    background: rgba(244,241,236,0.04);
+    border: 1px solid rgba(244,241,236,0.08);
+    border-radius: 4px;
+    padding: 36px;
+  }
+
+  .score-preview-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(244,241,236,0.35);
+    margin-bottom: 28px;
+  }
+
+  .score-bars { display: flex; flex-direction: column; gap: 18px; }
+
+  .score-bar-row { display: flex; flex-direction: column; gap: 8px; }
+
+  .score-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(244,241,236,0.5);
+    font-weight: 300;
+  }
+
+  .score-bar-track {
+    height: 3px;
+    background: rgba(244,241,236,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent));
+    width: 0;
+    transition: width 1.4s ease;
+  }
+
+  .score-bar-fill.animate { }
+  .score-bar-fill.w72 { width: 72%; transition-delay: 0.3s; }
+  .score-bar-fill.w58 { width: 58%; transition-delay: 0.5s; }
+  .score-bar-fill.w81 { width: 81%; transition-delay: 0.7s; }
+  .score-bar-fill.w45 { width: 45%; transition-delay: 0.9s; }
+
+  .score-disclaimer {
+    font-size: 11px;
+    color: rgba(244,241,236,0.2);
+    margin-top: 24px;
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  /* NEWSLETTER */
+  .newsletter {
+    padding: 120px 52px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .newsletter h2 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 300;
+    margin-bottom: 16px;
+    line-height: 1.25;
+  }
+
+  .newsletter p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-mid);
+    margin-bottom: 44px;
+    line-height: 1.7;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 0;
+    max-width: 440px;
+    margin: 0 auto 16px;
+    border: 1px solid var(--border);
+  }
+
+  .newsletter-form input {
+    flex: 1;
+    padding: 15px 20px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text);
+    background: var(--bg);
+    border: none;
+    outline: none;
+  }
+
+  .newsletter-form input::placeholder { color: var(--text-light); }
+
+  .newsletter-form button {
+    padding: 15px 24px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--bg);
+    background: var(--text);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .newsletter-form button:hover { opacity: 0.85; }
+
+  .newsletter-note {
+    font-size: 12px;
+    color: var(--text-light);
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 52px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.03em;
+  }
+
+  .footer-tagline {
+    font-size: 12px;
+    color: var(--text-light);
+    font-weight: 300;
+    margin-top: 4px;
+  }
+
+  .footer-links { display: flex; gap: 28px; }
+
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-light);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--text-mid); }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.85s ease, transform 0.85s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-scroll { left: 24px; }
+    .problem { padding: 80px 24px; }
+    .what { padding: 80px 24px; }
+    .pillars { grid-template-columns: 1fr; }
+    .articles { padding: 80px 24px; }
+    .articles-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .articles-header p { text-align: left; }
+    .article-grid { grid-template-columns: 1fr; }
+    .assessment { margin: 0 24px 80px; padding: 60px 32px; }
+    .assessment-inner { grid-template-columns: 1fr; gap: 48px; }
+    .newsletter { padding: 80px 24px; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 24px; text-align: center; }
+  }
+</style>
 </head>
 <body>
-    <div class="title">HARDY</div>
-    <div class="tour-name">Country! Country! Tour!</div>
-    <div class="subtitle">February 7, 2026 • 7:00 PM</div>
-    <div class="venue">Canada Life Place • London, ON</div>
-    <div class="supporting">with Cameron Whitcomb & McCoy Moore</div>
-    <div class="tagline" id="clock">00:00:00:00</div>
-    <div class="countdown-labels">DAYS     HOURS     MINS     SECS</div>
-    <a href="https://open.spotify.com/playlist/3a8aHwfyeGncejXinAN4Do" target="_blank" rel="noopener noreferrer" class="spotify-button">
-        <svg class="spotify-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-        </svg>
-        Listen to the Setlist
+
+<nav>
+  <a href="#" class="nav-logo">Calm Intelligence</a>
+  <ul class="nav-links">
+    <li><a href="#journal">Journal</a></li>
+    <li><a href="#assessment">Tools</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <a href="#assessment" class="nav-cta">Take the Score</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">A space for the overthinking mind</div>
+  <h1 class="hero-headline">For the <em>overwhelmed thinker</em> who's done with generic advice.</h1>
+  <p class="hero-sub">Built for people who are functioning well on the outside and carrying too much on the inside. Who want to think better, react less, and feel more like themselves.</p>
+  <div class="hero-actions">
+    <a href="#assessment" class="btn-primary">Take the Calm Intelligence Score</a>
+    <a href="#journal" class="btn-ghost">Read the journal</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem reveal">
+  <p>You're not overwhelmed because you're weak or disorganized.</p>
+  <p>You're overwhelmed because your mind is doing too many things at once. Processing pressure, managing emotions, making decisions, replaying conversations, anticipating what's next.</p>
+  <p><strong>Most advice tells you to do more.</strong> Manage better. Optimize harder.</p>
+  <p>We're interested in something quieter: what happens when you understand your own mind well enough that it stops working against you.</p>
+</section>
+
+<!-- WHAT IT IS -->
+<section class="what">
+  <div class="what-inner">
+    <div class="section-label reveal">What this is</div>
+    <h2 class="what-headline reveal">Not another self-help brand.</h2>
+    <p class="what-desc reveal">Calm Intelligence sits at a specific intersection. Where clear thinking meets emotional honesty. Where practical meets grounded. It's the quiet, rigorous practice of becoming someone who handles life well.</p>
+    <div class="pillars reveal">
+      <div class="pillar">
+        <div class="pillar-number">01</div>
+        <div class="pillar-title">Think Clearly</div>
+        <p class="pillar-body">Reduce the cognitive noise. Question your assumptions. Make better decisions without the mental spiral.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-number">02</div>
+        <div class="pillar-title">Feel Steady</div>
+        <p class="pillar-body">Understand your emotional patterns well enough that they inform you instead of control you.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-number">03</div>
+        <div class="pillar-title">Live Deliberately</div>
+        <p class="pillar-body">Design a life that reflects what you actually value. Not what you've defaulted into.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section class="articles reveal" id="journal">
+  <div class="articles-header">
+    <h2>From the Journal</h2>
+    <p>Ideas worth sitting with. Written for the person who wants more than surface-level answers.</p>
+  </div>
+  <div class="article-grid">
+    <a href="#" class="article-card featured">
+      <div class="article-tag">Clear Thinking</div>
+      <div class="article-title">Why You Can't Think Clearly When You're Overwhelmed</div>
+      <p class="article-desc">It's not a focus problem. It's a nervous system problem. Here's what's actually happening and what to do about it.</p>
+      <div class="article-link">Read <span></span></div>
     </a>
+    <a href="#" class="article-card">
+      <div class="article-tag">Emotional Steadiness</div>
+      <div class="article-title">The Difference Between Reacting and Responding</div>
+      <p class="article-desc">One happens to you. The other is something you build. Understanding the gap is where real change starts.</p>
+      <div class="article-link">Read <span></span></div>
+    </a>
+    <a href="#" class="article-card">
+      <div class="article-tag">Self-Knowledge</div>
+      <div class="article-title">The Version of You That Shows Up Under Pressure</div>
+      <p class="article-desc">Most self-awareness work happens in calm moments. But who you are when things are hard? That's the more honest answer.</p>
+      <div class="article-link">Read <span></span></div>
+    </a>
+  </div>
+</section>
 
-    <script>
-        // Default location: Listowel, Ontario
-        const DEFAULT_LOCATION = {
-            lat: 43.7333,
-            lng: -80.9500,
-            name: 'Listowel'
-        };
+<!-- ASSESSMENT -->
+<section class="assessment reveal" id="assessment">
+  <div class="assessment-inner">
+    <div class="assessment-left">
+      <div class="assessment-label">Calm Intelligence Score</div>
+      <h2 class="assessment-headline">How calm is your mind, right now?</h2>
+      <p class="assessment-body">Most people have a general sense that they're stressed or scattered. But vague awareness doesn't change much.<br><br>The Calm Intelligence Score gives you something more specific. A clear picture of where your thinking gets cloudy, where your emotions take over, and what's worth working on first.</p>
+      <a href="#" class="btn-light">Take the Assessment →</a>
+      <p class="assessment-meta">Takes four minutes. No signup required. Free.</p>
+    </div>
+    <div class="assessment-right">
+      <div class="score-preview">
+        <div class="score-preview-label">Sample result preview</div>
+        <div class="score-bars">
+          <div class="score-bar-row">
+            <div class="score-bar-label"><span>Cognitive Clarity</span><span>72</span></div>
+            <div class="score-bar-track"><div class="score-bar-fill w72"></div></div>
+          </div>
+          <div class="score-bar-row">
+            <div class="score-bar-label"><span>Emotional Regulation</span><span>58</span></div>
+            <div class="score-bar-track"><div class="score-bar-fill w58"></div></div>
+          </div>
+          <div class="score-bar-row">
+            <div class="score-bar-label"><span>Calm Under Pressure</span><span>81</span></div>
+            <div class="score-bar-track"><div class="score-bar-fill w81"></div></div>
+          </div>
+          <div class="score-bar-row">
+            <div class="score-bar-label"><span>Decision Clarity</span><span>45</span></div>
+            <div class="score-bar-track"><div class="score-bar-fill w45"></div></div>
+          </div>
+        </div>
+        <p class="score-disclaimer">Your results. Not someone else's framework.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Country-themed warm gradient definitions
-        const GRADIENTS = {
-            night: {
-                colors: ['#1a0f0a', '#2d1810', '#3d1f14', '#4a2618'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            dawn: {
-                colors: ['#4a2618', '#6b3a1e', '#8b4513', '#a0522d'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            sunrise: {
-                colors: ['#d2691e', '#e8701e', '#ff7f50', '#ff8c42'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            morning: {
-                colors: ['#daa520', '#cd853f', '#d2691e', '#c47335'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            midday: {
-                colors: ['#e6a84e', '#d4933e', '#c47d3a', '#b86f3a'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            afternoon: {
-                colors: ['#cd853f', '#c47335', '#b8602e', '#a0522d'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            goldenHour: {
-                colors: ['#ff8c42', '#ff7f50', '#e8701e', '#d2691e'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            sunset: {
-                colors: ['#d2691e', '#c1440e', '#a0311e', '#8b2500'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            },
-            dusk: {
-                colors: ['#8b4513', '#6b3410', '#4a2618', '#3d1f14'],
-                textColor: 'rgba(255, 255, 255, 1)',
-                taglineColor: 'rgba(255, 255, 255, 1)'
-            }
-        };
+<!-- NEWSLETTER -->
+<section class="newsletter reveal">
+  <h2>The Calm Intelligence Letter</h2>
+  <p>One clear idea, sent occasionally.<br>No noise. No weekly obligation. Just something worth reading when it arrives.</p>
+  <div class="newsletter-form">
+    <input type="email" placeholder="Your email address">
+    <button type="button">Subscribe</button>
+  </div>
+  <p class="newsletter-note">Sent when there's something worth saying. Unsubscribe anytime.</p>
+</section>
 
-        let currentLocation = null;
-        let sunData = null;
-        let isFirstLoad = true;
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Calm Intelligence</div>
+    <div class="footer-tagline">Clear thinking for a noisier world.</div>
+  </div>
+  <div class="footer-links">
+    <a href="#journal">Journal</a>
+    <a href="#assessment">Tools</a>
+    <a href="#">About</a>
+    <a href="#">Newsletter</a>
+  </div>
+</footer>
 
-        // Check localStorage for cached sun data
-        function checkCachedData() {
-            const cached = localStorage.getItem('sunData');
-            const cachedLocation = localStorage.getItem('location');
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
 
-            if (cached && cachedLocation) {
-                try {
-                    sunData = JSON.parse(cached);
-                    // Convert string dates back to Date objects
-                    sunData.sunrise = new Date(sunData.sunrise);
-                    sunData.sunset = new Date(sunData.sunset);
-                    sunData.solarNoon = new Date(sunData.solarNoon);
-                    sunData.civilTwilightBegin = new Date(sunData.civilTwilightBegin);
-                    sunData.civilTwilightEnd = new Date(sunData.civilTwilightEnd);
+  revealEls.forEach(el => revealObserver.observe(el));
 
-                    currentLocation = JSON.parse(cachedLocation);
-
-                    // Check if data is from today
-                    const cachedDate = new Date(sunData.sunrise).toDateString();
-                    const today = new Date().toDateString();
-
-                    if (cachedDate === today) {
-                        updateGradient();
-                        return true;
-                    }
-                } catch (e) {
-                    console.error('Error parsing cached data:', e);
-                }
-            }
-            return false;
-        }
-
-        // Set location to Listowel, Ontario
-        function getLocation() {
-            currentLocation = DEFAULT_LOCATION;
-            localStorage.setItem('location', JSON.stringify(currentLocation));
-            fetchSunData();
-        }
-
-        // Fetch sunrise/sunset data
-        async function fetchSunData() {
-            try {
-                const response = await fetch(
-                    `https://api.sunrise-sunset.org/json?lat=${currentLocation.lat}&lng=${currentLocation.lng}&formatted=0`
-                );
-                const data = await response.json();
-
-                if (data.status === 'OK') {
-                    sunData = {
-                        sunrise: new Date(data.results.sunrise),
-                        sunset: new Date(data.results.sunset),
-                        solarNoon: new Date(data.results.solar_noon),
-                        civilTwilightBegin: new Date(data.results.civil_twilight_begin),
-                        civilTwilightEnd: new Date(data.results.civil_twilight_end)
-                    };
-
-                    // Cache sun data
-                    localStorage.setItem('sunData', JSON.stringify(sunData));
-
-                    updateGradient();
-
-                    // Update every minute
-                    setInterval(() => {
-                        updateGradient();
-                    }, 60000);
-                } else {
-                    throw new Error('Failed to fetch sun data');
-                }
-            } catch (error) {
-                console.error('Error fetching sun data:', error);
-            }
-        }
-
-        // Calculate current phase of day
-        function getCurrentPhase() {
-            if (!sunData) return 'night';
-
-            const now = new Date();
-            const currentTime = now.getTime();
-
-            const { sunrise, sunset, civilTwilightBegin, civilTwilightEnd } = sunData;
-
-            const dawnStart = civilTwilightBegin.getTime();
-            const dawnEnd = sunrise.getTime() - (30 * 60 * 1000);
-            const sunriseStart = dawnEnd;
-            const sunriseEnd = sunrise.getTime() + (30 * 60 * 1000);
-            const morningEnd = sunrise.getTime() + (3 * 60 * 60 * 1000);
-
-            const afternoonStart = sunset.getTime() - (4 * 60 * 60 * 1000);
-            const goldenHourStart = sunset.getTime() - (90 * 60 * 1000);
-            const sunsetStart = sunset.getTime() - (30 * 60 * 1000);
-            const sunsetEnd = sunset.getTime() + (30 * 60 * 1000);
-            const duskEnd = civilTwilightEnd.getTime();
-
-            if (currentTime >= dawnStart && currentTime < dawnEnd) {
-                return 'dawn';
-            } else if (currentTime >= sunriseStart && currentTime < sunriseEnd) {
-                return 'sunrise';
-            } else if (currentTime >= sunriseEnd && currentTime < morningEnd) {
-                return 'morning';
-            } else if (currentTime >= morningEnd && currentTime < afternoonStart) {
-                return 'midday';
-            } else if (currentTime >= afternoonStart && currentTime < goldenHourStart) {
-                return 'afternoon';
-            } else if (currentTime >= goldenHourStart && currentTime < sunsetStart) {
-                return 'goldenHour';
-            } else if (currentTime >= sunsetStart && currentTime < sunsetEnd) {
-                return 'sunset';
-            } else if (currentTime >= sunsetEnd && currentTime < duskEnd) {
-                return 'dusk';
-            } else {
-                return 'night';
-            }
-        }
-
-        // Hardy concert countdown
-        const concertDate = new Date('2026-02-07T19:00:00'); // Feb 7, 2026 at 7:00 PM
-
-        // Update countdown display
-        function updateClock() {
-            const now = new Date();
-            const diff = concertDate - now;
-
-            if (diff <= 0) {
-                // Concert time!
-                const clockElement = document.getElementById('clock');
-                if (clockElement) {
-                    clockElement.textContent = `IT'S TIME`;
-                }
-                return;
-            }
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            const clockElement = document.getElementById('clock');
-            if (clockElement) {
-                const d = String(days).padStart(2, '0');
-                const h = String(hours).padStart(2, '0');
-                const m = String(minutes).padStart(2, '0');
-                const s = String(seconds).padStart(2, '0');
-                clockElement.textContent = `${d}       ${h}       ${m}       ${s}`;
-            }
-        }
-
-        // Start countdown updates
-        setInterval(updateClock, 1000);
-        updateClock(); // Initial call
-
-        // Calculate dynamic font weight based on solar position
-        function calculateFontWeight() {
-            if (!sunData) return 200;
-
-            const now = new Date();
-            const currentTime = now.getTime();
-            const sunrise = sunData.sunrise.getTime();
-            const sunset = sunData.sunset.getTime();
-            const solarNoon = sunData.solarNoon.getTime();
-
-            // Night: weight 100-200
-            if (currentTime < sunrise || currentTime > sunset) {
-                return 200;
-            }
-
-            // Day: transition from 200 (sunrise) to 400 (noon) to 200 (sunset)
-            if (currentTime <= solarNoon) {
-                // Morning: 200 → 400
-                const progress = (currentTime - sunrise) / (solarNoon - sunrise);
-                return 200 + (progress * 200);
-            } else {
-                // Afternoon: 400 → 200
-                const progress = (currentTime - solarNoon) / (sunset - solarNoon);
-                return 400 - (progress * 200);
-            }
-        }
-
-        // Update gradient based on current phase (Animated Liquid Gradient)
-        function updateGradient() {
-            const phase = getCurrentPhase();
-            const gradient = GRADIENTS[phase];
-
-            if (gradient) {
-                // Update CSS custom properties for the 4 animated gradient circles
-                document.body.style.setProperty('--color-1', gradient.colors[0]);
-                document.body.style.setProperty('--color-2', gradient.colors[1]);
-                document.body.style.setProperty('--color-3', gradient.colors[2]);
-                document.body.style.setProperty('--color-4', gradient.colors[3]);
-
-                // Update text colors
-                const title = document.querySelector('.title');
-                const tourName = document.querySelector('.tour-name');
-                const subtitle = document.querySelector('.subtitle');
-                const venue = document.querySelector('.venue');
-                const supporting = document.querySelector('.supporting');
-                const tagline = document.querySelector('.tagline');
-                const labels = document.querySelector('.countdown-labels');
-
-                if (title) {
-                    title.style.color = gradient.textColor;
-                }
-
-                if (tourName) {
-                    tourName.style.color = gradient.textColor;
-                }
-
-                if (subtitle) {
-                    subtitle.style.color = gradient.textColor;
-                }
-
-                if (venue) {
-                    venue.style.color = gradient.textColor;
-                }
-
-                if (supporting) {
-                    supporting.style.color = 'rgba(255, 255, 255, 0.6)';
-                }
-
-                if (tagline) {
-                    tagline.style.color = gradient.taglineColor;
-                }
-
-                if (labels) {
-                    labels.style.color = gradient.taglineColor;
-                }
-
-                // Apply faster transition on first load
-                if (isFirstLoad) {
-                    document.body.classList.add('loaded');
-                    isFirstLoad = false;
-                }
-            }
-        }
-
-        // Mouse tracking for interactive gradient movement
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        let currentX = 0;
-        let currentY = 0;
-        let isMouseActive = false;
-        let inactivityTimeout = null;
-
-        // Smooth interpolation (lerp)
-        function lerp(start, end, factor) {
-            return start + (end - start) * factor;
-        }
-
-        // Track mouse movement
-        document.addEventListener('mousemove', (e) => {
-            // Normalize mouse position to -1 to 1 range
-            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-
-            // Tighter, more refined swirling effect
-            targetX = mouseX * 8; // 8% max offset for subtle luxury movement
-            targetY = mouseY * 8;
-
-            isMouseActive = true;
-
-            // Reset inactivity timeout
-            clearTimeout(inactivityTimeout);
-            inactivityTimeout = setTimeout(() => {
-                isMouseActive = false;
-            }, 2000); // 2 seconds of no movement = drift back to center
+  // Score bar animation on scroll
+  const assessmentSection = document.querySelector('.assessment');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.score-bar-fill').forEach(bar => {
+          bar.style.width = bar.classList.contains('w72') ? '72%'
+            : bar.classList.contains('w58') ? '58%'
+            : bar.classList.contains('w81') ? '81%'
+            : '45%';
         });
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
 
-        // Mouse leaves viewport = drift back to center
-        document.addEventListener('mouseleave', () => {
-            isMouseActive = false;
-            targetX = 0;
-            targetY = 0;
-        });
+  if (assessmentSection) barObserver.observe(assessmentSection);
 
-        // Animation loop for smooth gradient movement
-        function animateGradient() {
-            // If mouse is inactive, drift back to center
-            if (!isMouseActive) {
-                targetX = lerp(targetX, 0, 0.03); // Drift back
-                targetY = lerp(targetY, 0, 0.03);
-            }
-
-            // Smooth interpolation with inertia - increased for more responsiveness
-            currentX = lerp(currentX, targetX, 0.15); // 15% interpolation = more responsive
-            currentY = lerp(currentY, targetY, 0.15);
-
-            // Apply transform to gradient background
-            const gradientLayer = document.body;
-            if (gradientLayer) {
-                gradientLayer.style.setProperty('--offset-x', `${currentX}%`);
-                gradientLayer.style.setProperty('--offset-y', `${currentY}%`);
-            }
-
-            requestAnimationFrame(animateGradient);
-        }
-
-        // Start animation loop
-        animateGradient();
-
-        // Initialize
-        const hasCachedData = checkCachedData();
-
-        if (!hasCachedData) {
-            getLocation();
-        } else {
-            // Still fetch fresh data in background
-            getLocation();
-            // Set up interval for updates
-            setInterval(() => {
-                updateGradient();
-            }, 60000);
-        }
-    </script>
+  // Newsletter button feedback
+  const newsletterBtn = document.querySelector('.newsletter-form button');
+  const newsletterInput = document.querySelector('.newsletter-form input');
+  if (newsletterBtn) {
+    newsletterBtn.addEventListener('click', () => {
+      if (newsletterInput.value && newsletterInput.value.includes('@')) {
+        newsletterBtn.textContent = 'You\'re in.';
+        newsletterBtn.style.background = 'var(--accent)';
+        newsletterInput.value = '';
+        newsletterInput.placeholder = 'See you soon.';
+      } else {
+        newsletterInput.style.outline = '1px solid var(--accent-warm)';
+        newsletterInput.focus();
+        setTimeout(() => { newsletterInput.style.outline = 'none'; }, 1200);
+      }
+    });
+  }
+</script>
 </body>
 </html>
