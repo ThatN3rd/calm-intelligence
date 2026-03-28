@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Intelligence Score</title>
+<meta name="description" content="A four-minute assessment that shows you where your thinking gets cloudy, where your emotions take over, and what to work on first.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F4F1EC;
+    --bg-alt: #EDE9E2;
+    --bg-dark: #1C1C1A;
+    --text: #1E1D1B;
+    --text-mid: #5A5750;
+    --text-light: #9A948A;
+    --accent: #7B8C7E;
+    --accent-warm: #C4A882;
+    --accent-blue: #7D9AA0;
+    --border: rgba(30,29,27,0.1);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 52px;
+    background: rgba(244,241,236,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-back {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mid);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+
+  .nav-back:hover { color: var(--text); }
+
+  .nav-back-arrow {
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+    position: relative;
+    display: inline-block;
+  }
+
+  .nav-back-arrow::before {
+    content: '';
+    position: absolute;
+    left: 0; top: -3px;
+    width: 6px; height: 6px;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    position: fixed;
+    top: 65px; left: 0; right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .progress-bar-wrap.visible { opacity: 1; }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding: 100px 52px 60px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen.active { display: flex; }
+
+  /* INTRO SCREEN */
+  #intro {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .intro-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.1s forwards;
+  }
+
+  .intro-headline {
+    font-family: var(--serif);
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.25s forwards;
+  }
+
+  .intro-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .intro-body {
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-mid);
+    max-width: 500px;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .intro-meta {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+  }
+
+  .intro-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-light);
+    letter-spacing: 0.04em;
+  }
+
+  .intro-meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--text);
+    color: var(--bg);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 16px 36px;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.65s forwards;
+  }
+
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .intro-dimensions {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    width: 100%;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .intro-dim {
+    background: var(--bg);
+    padding: 24px 20px;
+  }
+
+  .intro-dim-num {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 10px;
+  }
+
+  .intro-dim-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  /* QUESTION SCREEN */
+  #question-screen {
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 52px;
+  }
+
+  .q-number {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .q-dimension-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(123,140,126,0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .q-text {
+    font-family: var(--serif);
+    font-size: clamp(24px, 3.5vw, 38px);
+    font-weight: 300;
+    line-height: 1.35;
+    color: var(--text);
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .q-text.visible { opacity: 1; transform: none; }
+
+  /* SCENARIO OPTIONS */
+  .options-scenario {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.45s ease 0.1s, transform 0.45s ease 0.1s;
+  }
+
+  .options-scenario.visible { opacity: 1; transform: none; }
+
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 20px 24px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--text-mid);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .option-btn:hover {
+    background: var(--bg-alt);
+    color: var(--text);
+    border-color: rgba(30,29,27,0.2);
+  }
+
+  .option-btn.selected {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+
+  .option-letter {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 14px;
+    opacity: 0.45;
+  }
+
+  .option-btn.selected .option-letter { opacity: 0.6; }
+
+
+  /* NAVIGATION BUTTONS */
+  .q-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.45s ease 0.2s, transform 0.45s ease 0.2s;
+  }
+
+  .q-nav.visible { opacity: 1; transform: none; }
+
+  .btn-back {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: color 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-back:hover { color: var(--text-mid); }
+
+  .btn-next {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bg);
+    background: var(--text);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .btn-next.enabled {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-next.enabled:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* LOADING SCREEN */
+  #loading {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .loading-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .loading-line-wrap {
+    width: 120px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loading-line {
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    animation: loadSlide 1.8s ease infinite;
+  }
+
+  @keyframes loadSlide {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+  }
+
+  .loading-text {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--text-mid);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.3s forwards;
+  }
+
+  .loading-sub {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.7s forwards;
+  }
+
+  /* RESULTS SCREEN */
+  #results {
+    padding-top: 120px;
+    align-items: center;
+    min-height: auto;
+  }
+
+  .results-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .results-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .results-score-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .results-score {
+    font-family: var(--serif);
+    font-size: clamp(72px, 12vw, 120px);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .results-score-denom {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--text-light);
+    margin-bottom: 16px;
+  }
+
+  .results-profile-name {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .results-profile-desc {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--text-mid);
+    max-width: 560px;
+    margin-bottom: 52px;
+    padding-bottom: 52px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* DIMENSION RESULTS */
+  .results-dimensions {
+    margin-bottom: 52px;
+  }
+
+  .results-dim-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 28px;
+  }
+
+  .dim-result {
+    display: grid;
+    grid-template-columns: 160px 1fr 36px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .dim-result-name {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mid);
+    letter-spacing: 0.02em;
+  }
+
+  .dim-bar-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .dim-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    width: 0;
+    transition: width 1.2s ease;
+  }
+
+  .dim-bar-fill.low { background: var(--accent-warm); }
+
+  .dim-result-score {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mid);
+    text-align: right;
+  }
+
+  .dim-insight {
+    margin-top: 28px;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-mid);
+    font-style: italic;
+    font-family: var(--serif);
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* READING RECOMMENDATIONS */
+  .results-reading {
+    padding-top: 52px;
+    border-top: 1px solid var(--border);
+    margin-bottom: 52px;
+  }
+
+  .results-reading-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 28px;
+  }
+
+  .reading-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .reading-card {
+    background: var(--bg);
+    padding: 28px 28px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .reading-card:hover { background: var(--bg-alt); }
+
+  .reading-card-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .reading-card-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .reading-card-arrow {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .reading-card-arrow span {
+    width: 16px;
+    height: 1px;
+    background: var(--text-light);
+    display: inline-block;
+    transition: width 0.2s;
+  }
+
+  .reading-card:hover .reading-card-arrow span { width: 24px; }
+
+  /* RESULTS CTA */
+  .results-cta {
+    background: var(--bg-dark);
+    padding: 48px 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+
+  .results-cta-text h3 {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 300;
+    color: #F4F1EC;
+    margin-bottom: 8px;
+  }
+
+  .results-cta-text p {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(244,241,236,0.5);
+    line-height: 1.6;
+  }
+
+  .results-cta-form {
+    display: flex;
+    gap: 0;
+    border: 1px solid rgba(244,241,236,0.12);
+    flex-shrink: 0;
+  }
+
+  .results-cta-form input {
+    padding: 13px 18px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: #F4F1EC;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 220px;
+  }
+
+  .results-cta-form input::placeholder { color: rgba(244,241,236,0.3); }
+
+  .results-cta-form button {
+    padding: 13px 20px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--bg-dark);
+    background: #F4F1EC;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .results-cta-form button:hover { opacity: 0.88; }
+
+  .btn-retake {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 60px;
+    transition: color 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-retake:hover { color: var(--text-mid); }
+
+  /* FOOTER */
+  .results-footer {
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .results-footer-brand {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+  }
+
+  .results-footer-link {
+    font-size: 12px;
+    color: var(--text-light);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .results-footer-link:hover { color: var(--text-mid); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+
+    .screen { padding: 88px 20px 48px; }
+
+    #results { padding-top: 100px; }
+
+    .intro-dimensions {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 48px;
+    }
+
+    .q-meta { margin-bottom: 36px; }
+
+    .dim-result {
+      grid-template-columns: 120px 1fr 32px;
+      gap: 12px;
+    }
+
+    .reading-cards { grid-template-columns: 1fr; }
+
+    .results-cta {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 36px 28px;
+    }
+
+    .results-cta-form { width: 100%; }
+
+    .results-cta-form input { width: 100%; flex: 1; }
+
+    .results-footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  @media (max-width: 380px) {
+    .intro-dimensions { grid-template-columns: 1fr; }
+    .results-score { font-size: 72px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Calm Intelligence</a>
+  <a href="index.html" class="nav-back">
+    <span class="nav-back-arrow"></span>
+    Back to home
+  </a>
+</nav>
+
+<div class="progress-bar-wrap" id="progressWrap">
+  <div class="progress-bar-fill" id="progressBar"></div>
+</div>
+
+<!-- INTRO -->
+<div class="screen active" id="intro">
+  <div class="intro-eyebrow">Calm Intelligence Score</div>
+  <h1 class="intro-headline">How calm is your<br><em>mind, right now?</em></h1>
+  <p class="intro-body">Most people have a vague sense of how stressed or scattered they are. This gives you something more specific. Honest questions, a clear result, and something useful at the end.</p>
+  <div class="intro-meta">
+    <div class="intro-meta-item">
+      <span class="intro-meta-dot"></span>
+      13 questions
+    </div>
+    <div class="intro-meta-item">
+      <span class="intro-meta-dot"></span>
+      About 4 minutes
+    </div>
+    <div class="intro-meta-item">
+      <span class="intro-meta-dot"></span>
+      No signup required
+    </div>
+  </div>
+  <button class="btn-primary" id="startBtn">Begin the assessment</button>
+  <div class="intro-dimensions">
+    <div class="intro-dim">
+      <div class="intro-dim-num">01</div>
+      <div class="intro-dim-name">Cognitive Clarity</div>
+    </div>
+    <div class="intro-dim">
+      <div class="intro-dim-num">02</div>
+      <div class="intro-dim-name">Emotional Regulation</div>
+    </div>
+    <div class="intro-dim">
+      <div class="intro-dim-num">03</div>
+      <div class="intro-dim-name">Calm Under Pressure</div>
+    </div>
+    <div class="intro-dim">
+      <div class="intro-dim-num">04</div>
+      <div class="intro-dim-name">Decision Clarity</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUESTION SCREEN -->
+<div class="screen" id="question-screen">
+  <div class="q-meta">
+    <span class="q-number" id="qNumber">Question 1 of 13</span>
+    <span class="q-dimension-tag" id="qDimension">Cognitive Clarity</span>
+  </div>
+  <div class="q-text" id="qText"></div>
+  <div id="optionsWrap"></div>
+  <div class="q-nav visible">
+    <button class="btn-back" id="backBtn">Back</button>
+    <button class="btn-next" id="nextBtn">Continue</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="screen" id="loading">
+  <div class="loading-inner">
+    <div class="loading-line-wrap">
+      <div class="loading-line"></div>
+    </div>
+    <div class="loading-text">Working out your profile...</div>
+    <div class="loading-sub">One moment</div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="results">
+  <div class="results-inner">
+    <div class="results-eyebrow">Your Calm Intelligence Score</div>
+    <div class="results-score-wrap">
+      <div class="results-score" id="resultScore">0</div>
+      <div class="results-score-denom">/100</div>
+    </div>
+    <div class="results-profile-name" id="resultProfile"></div>
+    <p class="results-profile-desc" id="resultDesc"></p>
+
+    <div class="results-dimensions">
+      <div class="results-dim-label">Your breakdown</div>
+      <div class="dim-result">
+        <div class="dim-result-name">Cognitive Clarity</div>
+        <div class="dim-bar-track"><div class="dim-bar-fill" id="bar-cognitive"></div></div>
+        <div class="dim-result-score" id="score-cognitive"></div>
+      </div>
+      <div class="dim-result">
+        <div class="dim-result-name">Emotional Regulation</div>
+        <div class="dim-bar-track"><div class="dim-bar-fill" id="bar-emotional"></div></div>
+        <div class="dim-result-score" id="score-emotional"></div>
+      </div>
+      <div class="dim-result">
+        <div class="dim-result-name">Calm Under Pressure</div>
+        <div class="dim-bar-track"><div class="dim-bar-fill" id="bar-pressure"></div></div>
+        <div class="dim-result-score" id="score-pressure"></div>
+      </div>
+      <div class="dim-result">
+        <div class="dim-result-name">Decision Clarity</div>
+        <div class="dim-bar-track"><div class="dim-bar-fill" id="bar-decision"></div></div>
+        <div class="dim-result-score" id="score-decision"></div>
+      </div>
+      <p class="dim-insight" id="dimInsight"></p>
+    </div>
+
+    <div class="results-reading">
+      <div class="results-reading-label">Worth reading next</div>
+      <div class="reading-cards" id="readingCards"></div>
+    </div>
+
+    <div class="results-cta">
+      <div class="results-cta-text">
+        <h3 id="ctaHeadline">The Calm Intelligence Letter</h3>
+        <p id="ctaBody">One clear idea, sent occasionally. No noise. Just something worth reading.</p>
+      </div>
+      <div class="results-cta-form">
+        <input type="email" placeholder="Your email" id="resultsEmail">
+        <button type="button" id="resultsSubscribe">Subscribe</button>
+      </div>
+    </div>
+
+    <button class="btn-retake" id="retakeBtn">Take it again</button>
+
+    <div class="results-footer">
+      <a href="index.html" class="results-footer-brand">Calm Intelligence</a>
+      <a href="index.html" class="results-footer-link">Back to home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: 1,
+    dimension: 'cognitive',
+    dimensionLabel: 'Cognitive Clarity',
+    type: 'scenario',
+    text: 'You sit down to do something important. Within five minutes your mind has drifted to three other things you need to handle. What\'s most true for you?',
+    options: [
+      'This happens constantly and I rarely finish what I started',
+      'It happens often but I can usually pull myself back',
+      'It happens occasionally, especially when I\'m stressed',
+      'I\'m generally able to stay focused on one thing at a time'
+    ]
+  },
+  {
+    id: 2,
+    dimension: 'cognitive',
+    dimensionLabel: 'Cognitive Clarity',
+    type: 'scenario',
+    text: 'A conversation from earlier is still running in your head. Something you said, something they said. What\'s most true for you?',
+    options: [
+      'This happens with most interactions and I find it hard to let go',
+      'It happens often, especially if something felt unresolved',
+      'Occasionally, but I can usually set it aside when I need to',
+      'I process things and move on without much replay'
+    ]
+  },
+  {
+    id: 3,
+    dimension: 'cognitive',
+    dimensionLabel: 'Cognitive Clarity',
+    type: 'scenario',
+    text: 'It\'s the end of a full day. You\'ve handled a lot. When you try to think clearly about something that still needs your attention, what happens?',
+    options: [
+      'My mind is too foggy to engage. I put it off until tomorrow',
+      'I can engage but I\'m slower and second-guess myself more than usual',
+      'I manage to work through it, though it takes more effort than normal',
+      'My thinking stays fairly clear even after a demanding day'
+    ]
+  },
+  {
+    id: 4,
+    dimension: 'emotional',
+    dimensionLabel: 'Emotional Regulation',
+    type: 'scenario',
+    text: 'Someone gives you critical feedback on something you worked hard on. In the hours that follow, you\'re most likely to:',
+    options: [
+      'Feel stung and find it hard to move on',
+      'Feel defensive at first, then gradually settle',
+      'Feel uncomfortable but able to process it fairly quickly',
+      'Take it in and separate the useful parts from the rest'
+    ]
+  },
+  {
+    id: 5,
+    dimension: 'emotional',
+    dimensionLabel: 'Emotional Regulation',
+    type: 'scenario',
+    text: 'You\'re running late and it\'s completely out of your control. What tends to happen inside?',
+    options: [
+      'My stress spikes and it affects the rest of my day',
+      'I feel frustrated but manage to contain it',
+      'I feel the tension but can let it go once I arrive',
+      'It bothers me briefly, then I move on without much residue'
+    ]
+  },
+  {
+    id: 6,
+    dimension: 'emotional',
+    dimensionLabel: 'Emotional Regulation',
+    type: 'scenario',
+    text: 'Something upsetting happens in the morning. By the afternoon, where are you with it?',
+    options: [
+      'Still carrying it fully. It colours everything else in the day',
+      'Still feeling it but functioning. It comes in and out',
+      'Mostly moved through it, with some residue left',
+      'I\'ve processed it and it\'s genuinely behind me'
+    ]
+  },
+  {
+    id: 7,
+    dimension: 'pressure',
+    dimensionLabel: 'Calm Under Pressure',
+    type: 'scenario',
+    text: 'An important deadline is approaching and things aren\'t going to plan. You tend to:',
+    options: [
+      'Panic internally even if I look calm on the outside',
+      'Feel the pressure and get scattered or unfocused',
+      'Feel the pressure but stay functional and keep working',
+      'Stay focused and actually think more clearly under pressure'
+    ]
+  },
+  {
+    id: 8,
+    dimension: 'pressure',
+    dimensionLabel: 'Calm Under Pressure',
+    type: 'scenario',
+    text: 'You have a high-stakes conversation coming up in an hour. A difficult one. What\'s happening in your body and mind right now?',
+    options: [
+      'I\'m preoccupied. Running it over and over, struggling to focus on anything else',
+      'I feel anxious and restless, checking the time more than I\'d like',
+      'I feel some tension but I\'m managing. I can still function',
+      'I\'m aware of it but steady. I\'ll be ready when the moment comes'
+    ]
+  },
+  {
+    id: 9,
+    dimension: 'pressure',
+    dimensionLabel: 'Calm Under Pressure',
+    type: 'scenario',
+    text: 'You walk into a room where someone is visibly stressed or emotionally wound up. What tends to happen to you?',
+    options: [
+      'I feel it immediately. Their state becomes my state',
+      'It pulls on me. I find it hard not to take it on',
+      'I notice it and it affects me somewhat, but I stay mostly grounded',
+      'I can be present with their stress without it changing my own state'
+    ]
+  },
+  {
+    id: 10,
+    dimension: 'pressure',
+    dimensionLabel: 'Calm Under Pressure',
+    type: 'scenario',
+    text: 'You\'re in a tense conversation where you feel misunderstood. What usually happens?',
+    options: [
+      'I shut down or get more defensive as it continues',
+      'I try to explain myself but feel my emotions rising',
+      'I stay reasonably composed but feel it internally',
+      'I can stay calm and really listen even when it\'s uncomfortable'
+    ]
+  },
+  {
+    id: 11,
+    dimension: 'decision',
+    dimensionLabel: 'Decision Clarity',
+    type: 'scenario',
+    text: 'There\'s a decision you\'ve been putting off. You know what you probably need to do. What\'s keeping you from doing it?',
+    options: [
+      'Fear of getting it wrong. I keep looking for more certainty before I can act',
+      'I go back and forth and can\'t settle. Every option has something wrong with it',
+      'I\'m close to deciding but want to sit with it a little longer before committing',
+      'Honestly, not much. When I know what needs to happen I tend to just do it'
+    ]
+  },
+  {
+    id: 12,
+    dimension: 'decision',
+    dimensionLabel: 'Decision Clarity',
+    type: 'scenario',
+    text: 'You made an important call two days ago. It\'s done. Where are you with it now?',
+    options: [
+      'Still second-guessing it. Replaying what I could have done differently',
+      'Uncertain about it. Hoping I got it right but not fully trusting the decision',
+      'Mostly at peace with it, with some lingering doubt',
+      'I made the best call I could with what I had. It\'s behind me'
+    ]
+  },
+  {
+    id: 13,
+    dimension: 'decision',
+    dimensionLabel: 'Decision Clarity',
+    type: 'scenario',
+    text: 'You sit down to work and you have twelve things that all feel important. What actually happens next?',
+    options: [
+      'I freeze or jump between things without finishing any of them',
+      'I start something but feel the pull of everything else. Progress is slow',
+      'I work through it but spend real energy figuring out where to begin',
+      'I identify what actually matters most and start there without much friction'
+    ]
+  }
+];
+
+const PROFILES = [
+  {
+    min: 81, max: 100,
+    name: 'Settled',
+    desc: 'You\'ve built genuine steadiness. Not the absence of difficulty, but a real capacity to move through it without being derailed. You think clearly under most conditions, recover well emotionally, and tend to trust your own judgement. The work ahead is refinement, not repair.'
+  },
+  {
+    min: 61, max: 80,
+    name: 'Developing',
+    desc: 'You have real strengths here. You\'re self-aware, capable, and functional under most conditions. But you\'re carrying more than you need to. The gap between how you want to respond and how you actually do in certain moments. That\'s the most useful place to look.'
+  },
+  {
+    min: 41, max: 60,
+    name: 'Aware',
+    desc: 'You know yourself well enough to see the patterns. That\'s more than most people manage. The challenge is that awareness and change aren\'t the same thing. The work is building the capacity to act differently in difficult moments, not just observe them.'
+  },
+  {
+    min: 21, max: 40,
+    name: 'Activated',
+    desc: 'Your nervous system is running the show more than you\'d like right now. This isn\'t a character flaw. It\'s a pattern, and patterns can shift. You\'re probably more affected by stress, other people\'s energy, and uncertainty than feels comfortable. That\'s a workable place to start.'
+  },
+  {
+    min: 0, max: 20,
+    name: 'Overloaded',
+    desc: 'You\'re carrying a lot right now. This score is a starting point, not a verdict. What it reflects is a mind stretched past its comfortable operating range. The most useful thing is not to try harder, but to understand what\'s draining the system and address that first.'
+  }
+];
+
+const DIMENSION_INSIGHTS = {
+  cognitive: {
+    high: 'Your thinking stays fairly clear even when life gets noisy. You\'re able to focus, let things go, and engage with what\'s in front of you. Worth protecting.',
+    mid: 'Mental clarity is there when things are calm, but the noise gets louder under load. Rumination and distraction are pulling on you more than you\'d like.',
+    low: 'Your mind is doing a lot of work that isn\'t moving you forward. Replaying, drifting, struggling to land on what matters. This is the area to focus on first.'
+  },
+  emotional: {
+    high: 'You process emotions without being ruled by them. Things land, you feel them, and you move through without much residue. That\'s a real capacity.',
+    mid: 'You\'re emotionally aware but recovery takes longer than you\'d like. Certain situations (criticism, conflict, uncertainty) stay with you in ways that cost you energy.',
+    low: 'Emotions are moving through you slowly and staying longer than they need to. Things that upset you tend to colour your whole day. This is the dimension worth most of your attention right now.'
+  },
+  pressure: {
+    high: 'You hold up well under pressure. The stakes don\'t scatter you, other people\'s stress doesn\'t become yours, and you stay present in difficult moments. Genuinely useful.',
+    mid: 'You function under pressure but it costs you. Internally there\'s more going on than shows on the surface. High-stakes moments leave a mark that takes a while to clear.',
+    low: 'Pressure is hitting you hard right now. Difficult conversations, looming deadlines, other people\'s stress. It all pulls you off centre more than you want. This is where to focus.'
+  },
+  decision: {
+    high: 'You make calls with reasonable confidence and don\'t spend much time second-guessing. That decisiveness frees up a lot of mental space.',
+    mid: 'Decisions get made but not cleanly. There\'s more hesitation, more replay, more "did I get that right" than is useful. The decision fatigue this creates is worth looking at.',
+    low: 'Decisions are costing you a lot. The indecision, the second-guessing, the feeling that every option has something wrong with it. This is draining more energy than the decisions themselves are worth.'
+  }
+};
+
+const NEWSLETTER_COPY = {
+  cognitive: {
+    headline: 'Want to quieten the mental noise?',
+    body: 'The Calm Intelligence Letter occasionally goes deep on exactly this: how to think more clearly, reduce rumination, and stop your mind from working against you. No noise. Just useful ideas when they\'re ready.'
+  },
+  emotional: {
+    headline: 'Want to stop carrying things longer than you need to?',
+    body: 'The Calm Intelligence Letter covers emotional steadiness in a way that\'s honest, not fluffy. How to process things without being ruled by them. Sent occasionally, when there\'s something worth saying.'
+  },
+  pressure: {
+    headline: 'Want to hold up better when things get hard?',
+    body: 'The Calm Intelligence Letter occasionally explores what real steadiness looks like under pressure. Not pretending things don\'t affect you. Just not being knocked sideways by them. Worth reading.'
+  },
+  decision: {
+    headline: 'Want to make decisions without the spiral?',
+    body: 'The Calm Intelligence Letter covers decision-making, overthinking, and the quiet cost of indecision. Practical and grounded, not prescriptive. Sent when there\'s something genuinely useful to share.'
+  },
+  default: {
+    headline: 'The Calm Intelligence Letter',
+    body: 'One clear idea, sent occasionally. No noise. No weekly obligation. Just something worth reading when it arrives.'
+  }
+};
+
+const READING_MAP = {
+  cognitive: [
+    { tag: 'Clear Thinking', title: 'Why You Can\'t Think Clearly When You\'re Overwhelmed', href: '#' },
+    { tag: 'Clear Thinking', title: 'The Mental Clutter Audit', href: '#' }
+  ],
+  emotional: [
+    { tag: 'Emotional Steadiness', title: 'The Difference Between Reacting and Responding', href: '#' },
+    { tag: 'Emotional Steadiness', title: 'How to Stop Absorbing Other People\'s Stress', href: '#' }
+  ],
+  pressure: [
+    { tag: 'Calm Under Pressure', title: 'The Version of You That Shows Up Under Pressure', href: '#' },
+    { tag: 'Calm Under Pressure', title: 'What Steadiness Actually Looks Like', href: '#' }
+  ],
+  decision: [
+    { tag: 'Decision Clarity', title: 'Why Smart People Overthink Simple Decisions', href: '#' },
+    { tag: 'Decision Clarity', title: 'The Cost of Not Deciding', href: '#' }
+  ]
+};
+
+// STATE
+let currentQ = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+// ELEMENTS
+const introScreen = document.getElementById('intro');
+const questionScreen = document.getElementById('question-screen');
+const loadingScreen = document.getElementById('loading');
+const resultsScreen = document.getElementById('results');
+const progressWrap = document.getElementById('progressWrap');
+const progressBar = document.getElementById('progressBar');
+const qNumber = document.getElementById('qNumber');
+const qDimension = document.getElementById('qDimension');
+const qText = document.getElementById('qText');
+const optionsWrap = document.getElementById('optionsWrap');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateProgress() {
+  const pct = ((currentQ) / QUESTIONS.length) * 100;
+  progressBar.style.width = pct + '%';
+}
+
+function renderQuestion(index) {
+  const q = QUESTIONS[index];
+
+  qNumber.textContent = `Question ${index + 1} of ${QUESTIONS.length}`;
+  qDimension.textContent = q.dimensionLabel;
+
+  // Animate out then in
+  qText.classList.remove('visible');
+  optionsWrap.innerHTML = '';
+
+  setTimeout(() => {
+    qText.textContent = q.text;
+    qText.classList.add('visible');
+
+    const wrap = document.createElement('div');
+    wrap.className = 'options-scenario';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn' + (answers[index] === i ? ' selected' : '');
+      btn.innerHTML = `<span class="option-letter">${String.fromCharCode(65 + i)}</span>${opt}`;
+      btn.addEventListener('click', () => selectOption(i, wrap));
+      wrap.appendChild(btn);
+    });
+    optionsWrap.appendChild(wrap);
+    setTimeout(() => wrap.classList.add('visible'), 50);
+
+    // Update next button
+    nextBtn.classList.toggle('enabled', answers[index] !== null);
+    nextBtn.textContent = index === QUESTIONS.length - 1 ? 'See my results' : 'Continue';
+    backBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
+  }, 80);
+
+  updateProgress();
+}
+
+function selectOption(i, wrap) {
+  answers[currentQ] = i;
+  wrap.querySelectorAll('.option-btn').forEach((b, idx) => {
+    b.classList.toggle('selected', idx === i);
+  });
+  nextBtn.classList.add('enabled');
+}
+
+function calcScores() {
+  const dims = { cognitive: [], emotional: [], pressure: [], decision: [] };
+
+  QUESTIONS.forEach((q, i) => {
+    const raw = answers[i];
+    if (raw === null) return;
+    // 0 = worst (25), 3 = best (100)
+    const score = Math.round(25 + (raw / 3) * 75);
+    dims[q.dimension].push(score);
+  });
+
+  const avg = arr => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 50;
+
+  const cognitive = avg(dims.cognitive);
+  const emotional = avg(dims.emotional);
+  const pressure = avg(dims.pressure);
+  const decision = avg(dims.decision);
+
+  const overall = Math.round(
+    cognitive * 0.25 +
+    emotional * 0.30 +
+    pressure * 0.25 +
+    decision * 0.20
+  );
+
+  return { overall, cognitive, emotional, pressure, decision };
+}
+
+function getLowestDims(scores) {
+  const dims = [
+    { key: 'cognitive', score: scores.cognitive },
+    { key: 'emotional', score: scores.emotional },
+    { key: 'pressure', score: scores.pressure },
+    { key: 'decision', score: scores.decision }
+  ];
+  return dims.sort((a, b) => a.score - b.score).slice(0, 2).map(d => d.key);
+}
+
+function animateScore(el, target, duration) {
+  const start = performance.now();
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function showResults(scores) {
+  showScreen('results');
+
+  // Score animation
+  const scoreEl = document.getElementById('resultScore');
+  animateScore(scoreEl, scores.overall, 1400);
+
+  // Profile
+  const profile = PROFILES.find(p => scores.overall >= p.min && scores.overall <= p.max) || PROFILES[2];
+  document.getElementById('resultProfile').textContent = profile.name;
+  document.getElementById('resultDesc').textContent = profile.desc;
+
+  // Dimension bars
+  setTimeout(() => {
+    const dims = [
+      { key: 'cognitive', id: 'cognitive' },
+      { key: 'emotional', id: 'emotional' },
+      { key: 'pressure', id: 'pressure' },
+      { key: 'decision', id: 'decision' }
+    ];
+
+    dims.forEach(({ key, id }, i) => {
+      const val = scores[key];
+      const bar = document.getElementById(`bar-${id}`);
+      const scoreEl2 = document.getElementById(`score-${id}`);
+      setTimeout(() => {
+        bar.style.width = val + '%';
+        if (val < 45) bar.classList.add('low');
+        scoreEl2.textContent = val;
+      }, i * 120);
+    });
+  }, 400);
+
+  // Reading recommendations based on two lowest dims
+  const lowest = getLowestDims(scores);
+  const primaryDim = lowest[0];
+
+  // Dimension insight based on lowest scoring dimension
+  const insightData = DIMENSION_INSIGHTS[primaryDim];
+  const lowestScore = scores[primaryDim];
+  const insightLevel = lowestScore >= 65 ? 'high' : lowestScore >= 40 ? 'mid' : 'low';
+  document.getElementById('dimInsight').textContent = insightData[insightLevel];
+
+  // Reading cards
+  const readingCards = document.getElementById('readingCards');
+  readingCards.innerHTML = '';
+  lowest.forEach(dim => {
+    const articles = READING_MAP[dim];
+    const article = articles[0];
+    const card = document.createElement('a');
+    card.href = article.href;
+    card.className = 'reading-card';
+    card.innerHTML = `
+      <div class="reading-card-tag">${article.tag}</div>
+      <div class="reading-card-title">${article.title}</div>
+      <div class="reading-card-arrow">Read <span></span></div>
+    `;
+    readingCards.appendChild(card);
+  });
+
+  // Personalised newsletter CTA based on lowest dimension
+  const newsletterCopy = NEWSLETTER_COPY[primaryDim] || NEWSLETTER_COPY.default;
+  document.getElementById('ctaHeadline').textContent = newsletterCopy.headline;
+  document.getElementById('ctaBody').textContent = newsletterCopy.body;
+
+  // Newsletter subscribe
+  const subscribeBtn = document.getElementById('resultsSubscribe');
+  const emailInput = document.getElementById('resultsEmail');
+  subscribeBtn.addEventListener('click', () => {
+    if (emailInput.value && emailInput.value.includes('@')) {
+      subscribeBtn.textContent = "You're in.";
+      subscribeBtn.style.background = 'var(--accent)';
+      subscribeBtn.style.color = '#F4F1EC';
+      emailInput.value = '';
+      emailInput.placeholder = 'See you soon.';
+    } else {
+      emailInput.style.outline = '1px solid var(--accent-warm)';
+      emailInput.focus();
+      setTimeout(() => emailInput.style.outline = 'none', 1200);
+    }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// EVENT LISTENERS
+document.getElementById('startBtn').addEventListener('click', () => {
+  showScreen('question-screen');
+  progressWrap.classList.add('visible');
+  renderQuestion(0);
+});
+
+nextBtn.addEventListener('click', () => {
+  if (!nextBtn.classList.contains('enabled')) return;
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion(currentQ);
+  } else {
+    // Show loading then results
+    showScreen('loading');
+    progressWrap.classList.remove('visible');
+    const scores = calcScores();
+    setTimeout(() => showResults(scores), 2400);
+  }
+});
+
+backBtn.addEventListener('click', () => {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion(currentQ);
+  }
+});
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  answers = new Array(QUESTIONS.length).fill(null);
+  currentQ = 0;
+  showScreen('intro');
+  progressWrap.classList.remove('visible');
+  progressBar.style.width = '0%';
+  window.scrollTo({ top: 0 });
+});
+</script>
+</body>
+</html>
