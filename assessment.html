@@ -114,7 +114,7 @@
   /* SCREENS */
   .screen {
     display: none;
-    min-height: 100vh;
+    min-height: 100svh;
     padding: 100px 52px 60px;
     flex-direction: column;
     justify-content: center;
@@ -785,42 +785,207 @@
 
   /* MOBILE */
   @media (max-width: 768px) {
-    nav { padding: 18px 20px; }
 
-    .screen { padding: 88px 20px 48px; }
+    /* Nav */
+    nav { padding: 16px 20px; }
 
-    #results { padding-top: 100px; }
+    /* All screens */
+    .screen {
+      padding: 76px 20px 32px;
+      min-height: 100svh;
+      justify-content: flex-start;
+    }
+
+    /* Intro */
+    #intro { padding-top: 20px; }
+
+    .intro-eyebrow { margin-bottom: 16px; }
+
+    .intro-headline {
+      font-size: clamp(34px, 9vw, 52px);
+      margin-bottom: 20px;
+      line-height: 1.08;
+    }
+
+    .intro-body {
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      max-width: 100%;
+    }
+
+    .intro-meta {
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 24px;
+      font-size: 15px;
+    }
 
     .intro-dimensions {
       grid-template-columns: 1fr 1fr;
-      margin-top: 48px;
+      margin-top: 32px;
     }
 
-    .q-meta { margin-bottom: 36px; }
+    .intro-dim { padding: 18px 16px; }
+
+    .intro-dim-name { font-size: 15px; }
+
+    /* Question screen */
+    #question-screen { padding-top: 12px; }
+
+    .q-meta {
+      margin-bottom: 24px;
+      gap: 10px;
+    }
+
+    .q-text {
+      font-size: clamp(20px, 5.5vw, 28px);
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    .options-scenario { gap: 8px; }
+
+    .option-btn {
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .option-letter { margin-right: 10px; }
+
+    .q-nav {
+      margin-top: 20px;
+      position: sticky;
+      bottom: 20px;
+    }
+
+    .btn-next {
+      padding: 14px 28px;
+      font-size: 14px;
+    }
+
+    /* Results */
+    #results {
+      padding-top: 88px;
+      min-height: auto;
+    }
+
+    .results-eyebrow { margin-bottom: 16px; }
+
+    .results-score {
+      font-size: clamp(64px, 18vw, 96px);
+    }
+
+    .results-score-denom {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .results-profile-name {
+      font-size: clamp(24px, 6vw, 36px);
+      margin-bottom: 14px;
+    }
+
+    .results-profile-desc {
+      font-size: 15px;
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+    }
+
+    .results-dim-label { margin-bottom: 20px; }
 
     .dim-result {
-      grid-template-columns: 120px 1fr 32px;
-      gap: 12px;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-bottom: 16px;
     }
 
+    .dim-result-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .dim-result-score {
+      display: none;
+    }
+
+    .dim-bar-track { height: 4px; }
+
+    .dim-insight {
+      font-size: 14px;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+
+    .results-reading { padding-top: 40px; }
+
     .reading-cards { grid-template-columns: 1fr; }
+
+    .reading-card { padding: 24px 20px; }
+
+    .reading-card-title { font-size: 18px; }
 
     .results-cta {
       flex-direction: column;
       align-items: flex-start;
-      padding: 36px 28px;
+      padding: 32px 24px;
+      gap: 24px;
     }
 
-    .results-cta-form { width: 100%; }
+    .results-cta-text h3 { font-size: 20px; }
 
-    .results-cta-form input { width: 100%; flex: 1; }
+    .results-cta-text p { font-size: 13px; }
 
-    .results-footer { flex-direction: column; gap: 16px; text-align: center; }
+    .results-cta-form {
+      width: 100%;
+      flex-direction: column;
+      border: none;
+      gap: 8px;
+    }
+
+    .results-cta-form input {
+      width: 100%;
+      border: 1px solid rgba(244,241,236,0.15);
+      border-radius: 2px;
+      font-size: 16px; /* prevents iOS zoom */
+      padding: 14px 16px;
+    }
+
+    .results-cta-form button {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 2px;
+      font-size: 14px;
+    }
+
+    .btn-retake { margin-bottom: 40px; }
+
+    .results-footer {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
   }
 
+  /* Small phones */
   @media (max-width: 380px) {
+    .screen { padding: 72px 16px 28px; }
     .intro-dimensions { grid-template-columns: 1fr; }
-    .results-score { font-size: 72px; }
+    .intro-headline { font-size: 32px; }
+    .q-text { font-size: 19px; }
+    .option-btn { padding: 12px 14px; font-size: 13px; }
+    .results-score { font-size: 60px; }
   }
 </style>
 </head>
